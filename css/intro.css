@@ -1,0 +1,108 @@
+/* ═══════════════════════════════════════════════
+   BARAMASI — intro / opening experience
+   Storyboard: logo → glow button → florals →
+   press → circle expands → silk flows in
+   ═══════════════════════════════════════════════ */
+
+#intro {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background:
+    radial-gradient(120% 95% at 50% 42%,
+      #F0E0CC 0%,
+      var(--cream) 44%,
+      #E6D2BC 76%,
+      var(--cream-deep) 100%);
+}
+
+.intro-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(90% 72% at 50% 45%,
+      transparent 55%,
+      rgba(122, 84, 56, 0.075) 100%);
+  pointer-events: none;
+}
+
+/* ── the logo: single element, center → header ── */
+#logo {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 30;
+  width: var(--intro-logo-d);
+  height: var(--intro-logo-d);
+  visibility: hidden;                 /* choreography reveals it */
+  will-change: transform, filter;
+  filter: drop-shadow(0 10px 28px rgba(120, 72, 40, 0.18));
+  pointer-events: none;
+}
+
+#logo.is-landed {
+  filter: drop-shadow(0 6px 18px rgba(20, 4, 2, 0.45));
+}
+
+/* ── rings ── */
+#rings {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--intro-logo-d) * 3.4);
+  height: calc(var(--intro-logo-d) * 3.4);
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  pointer-events: none;
+}
+
+#rings circle {
+  fill: none;
+  transform-origin: 100px 100px;
+  transform-box: view-box;
+}
+
+.ring-draw {
+  stroke: var(--terracotta-2);
+  stroke-width: 0.55;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  opacity: 0;
+  transform: rotate(-90deg);   /* draw starts from the top of the circle */
+}
+
+.ring-rest-1 { stroke: var(--taupe-ring);   stroke-width: 0.5;  opacity: 0; }
+.ring-rest-2 { stroke: var(--taupe-ring-2); stroke-width: 0.45; opacity: 0; }
+
+.ripple {
+  stroke: var(--terracotta-2);
+  stroke-width: 0.6;
+  opacity: 0;
+}
+
+/* ── florals ── */
+#florals {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.floral {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* ── silk canvas ── */
+#fabric {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}

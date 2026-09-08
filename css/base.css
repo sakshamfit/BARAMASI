@@ -1,0 +1,56 @@
+/* ═══════════════════════════════════════════════
+   BARAMASI — base tokens & reset
+   Colors sampled directly from brand references.
+   ═══════════════════════════════════════════════ */
+
+:root {
+  /* — sampled brand palette — */
+  --cream:        #ECDAC5;   /* intro ground */
+  --cream-deep:   #E0CAB2;   /* intro vignette edge */
+  --ivory:        #FBEAD4;   /* logo disc fill */
+  --terracotta:   #B56B4F;   /* button */
+  --terracotta-2: #A65B3F;   /* button pressed / ring line */
+  --taupe-ring:   #C6A288;   /* resting ring */
+  --taupe-ring-2: #DEC8B1;   /* inner resting ring */
+  --maroon:       #510D06;   /* hero wall */
+  --maroon-deep:  #411D11;   /* hero shadow corner */
+
+  /* — hero — */
+  --hero-fx: 0.5;            /* object-position focus x */
+  --text-cream: #F3E6D0;     /* hero type on maroon */
+  --logo-land-d: clamp(70px, 10.6vh, 100px);   /* landed logo diameter */
+
+  /* — section 2 — */
+  --s2-maroon: #5A1712;      /* editorial text on cream */
+
+  /* — intro geometry — */
+  --intro-logo-d: clamp(216px, 30vmin, 292px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+html { background: var(--cream); }
+
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* pinned while the opening choreography plays */
+body.is-locked { overflow: hidden; height: 100%; }
+
+img { user-select: none; -webkit-user-drag: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Checkout — BARAMASI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600&family=Cormorant+Garamond:wght@400;500;600&family=Great+Vibes&family=Jost:wght@300;400;500&family=Tiro+Devanagari+Hindi:wght@400;600&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/commerce.css">
+</head>
+<body class="commerce past-hero" data-page="checkout">
+
+  <header id="siteHeader"></header>
+
+  <main class="com-main">
+    <h1 class="com-h1" data-i18n="com.checkout.h">Checkout</h1>
+    <hr class="com-rule">
+
+    <p class="ck-banner">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-6.5-4.8-8.6-9.3C1.9 8.4 4.2 5 7.6 5c1.9 0 3.3.9 4.4 2.4C13.1 5.9 14.5 5 16.4 5c3.4 0 5.7 3.4 4.2 6.7C18.5 16.2 12 21 12 21Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      <span data-i18n="com.hydOnly">We’re currently delivering around Bettiah — or collect in store.</span>
+    </p>
+
+    <!-- step 1 · address -->
+    <section id="addrStep" aria-labelledby="addrH">
+      <h2 class="com-h2 ck-review-h" id="addrH" data-i18n="com.step.addr">Delivery Address</h2>
+      <form id="addrForm" novalidate>
+        <div class="cf-row">
+          <label for="adName" data-i18n="com.addr.fullname">Full Name</label>
+          <input id="adName" name="fullname" type="text" autocomplete="name">
+        </div>
+        <div class="cf-row">
+          <label for="adPhone" data-i18n="com.addr.phone">Contact Number</label>
+          <input id="adPhone" name="phone" type="tel" autocomplete="tel" inputmode="numeric" maxlength="10">
+        </div>
+        <div class="cf-row">
+          <label for="adHouse" data-i18n="com.addr.house">Flat / House No., Building</label>
+          <input id="adHouse" name="house" type="text" autocomplete="address-line1">
+        </div>
+        <div class="cf-row">
+          <label for="adStreet" data-i18n="com.addr.street">Street & Area</label>
+          <input id="adStreet" name="street" type="text" autocomplete="address-line2">
+        </div>
+        <div class="cf-row">
+          <label for="adLandmark" data-i18n="com.addr.landmark">Landmark (optional)</label>
+          <input id="adLandmark" name="landmark" type="text">
+        </div>
+        <div class="addr-2col">
+          <div class="cf-row">
+            <label for="adCity" data-i18n="com.addr.city">City</label>
+            <input id="adCity" name="city" type="text" autocomplete="address-level2" value="Bettiah">
+          </div>
+          <div class="cf-row">
+            <label for="adPin" data-i18n="com.addr.pincode">Pincode</label>
+            <input id="adPin" name="pincode" type="text" autocomplete="postal-code" inputmode="numeric" maxlength="6">
+          </div>
+        </div>
+        <div class="cf-row">
+          <label for="adState" data-i18n="com.addr.state">State</label>
+          <input id="adState" name="state" type="text" autocomplete="address-level1" value="Bihar">
+        </div>
+        <span id="addrErr" class="cf-err" role="alert" aria-live="polite"></span>
+        <button type="submit" class="ct-btn auth-submit">
+          <span data-i18n="com.addr.continue">Continue to Review</span>
+          <svg viewBox="0 0 26 12" fill="none" aria-hidden="true"><path d="M1 6h23m0 0-4.6-4.6M24 6l-4.6 4.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+    </section>
+
+    <!-- step 2 · review -->
+    <section id="reviewStep" hidden aria-labelledby="reviewH">
+      <h2 class="com-h2 ck-review-h" id="reviewH" data-i18n="com.step.review">Review & Place Order</h2>
+
+      <h3 class="com-eyebrow" data-i18n="com.review.items">Your Items</h3>
+      <ul id="reviewItems"></ul>
+      <div class="cs-row"><span data-i18n="com.total">Total</span><strong id="reviewTotal"></strong></div>
+
+      <h3 class="com-eyebrow" style="margin-top:3.5vh" data-i18n="com.review.addr">Delivering To</h3>
+      <p class="review-addr" id="reviewAddr"></p>
+
+      <p class="cs-note" data-i18n="com.testOrderNote">This is a test order — no payment has been collected. Online payment will open once our payment gateway is connected.</p>
+
+      <div class="review-actions">
+        <button id="placeOrder" class="ct-btn">
+          <span data-i18n="com.placeOrder">Place Order</span>
+          <svg viewBox="0 0 26 12" fill="none" aria-hidden="true"><path d="M1 6h23m0 0-4.6-4.6M24 6l-4.6 4.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button id="backToAddr" class="ck-back" data-i18n="com.back">Edit Address</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="js/commerce.js"></script>
+</body>
+</html>

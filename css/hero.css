@@ -1,0 +1,810 @@
+/* ═══════════════════════════════════════════════
+   BARAMASI — hero
+   Live editorial composition over the clean plate.
+   Copy column positions derive from the 1600×900
+   reference; the header is the refined couture
+   redesign (stage 3).
+   ═══════════════════════════════════════════════ */
+
+#hero {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  z-index: 0;
+  background: var(--maroon-deep);
+  opacity: 0;
+  visibility: hidden;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  color: var(--text-cream);
+}
+
+/* the traveled logo joins the header flow once landed,
+   so it scrolls away with the hero */
+#logo.in-header {
+  position: absolute;
+  left: 5.6%;
+  top: calc(6.6vh - var(--logo-land-d) / 2);
+  width: var(--logo-land-d);
+  height: var(--logo-land-d);
+  visibility: visible;
+  z-index: 7;
+}
+
+@media (max-width: 1024px) {
+  #logo.in-header {
+    left: 16px;
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
+    width: clamp(60px, 17vw, 80px);
+    height: clamp(60px, 17vw, 80px);
+  }
+}
+
+#heroFrame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+#heroImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: calc(var(--hero-fx) * 100%) 50%;
+  will-change: transform;
+}
+
+/* gentle scrims — legibility for the header and base, per reference lighting */
+.hero-grade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(26, 4, 2, 0.55) 0%, rgba(26, 4, 2, 0) 20%),
+    linear-gradient(0deg, rgba(22, 4, 2, 0.32) 0%, rgba(22, 4, 2, 0) 12%);
+}
+
+/* ─────────── header (couture single tier) ─────────── */
+
+#siteHeader {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 13vh;
+  z-index: 15;
+  pointer-events: none;              /* children re-enable */
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+#siteHeader a,
+#siteHeader button { pointer-events: auto; }
+
+/* light-ground state once the dark hero has scrolled away */
+#siteHeader::before {
+  content: '';
+  position: absolute;
+  inset: -1px 0 -3.5vh 0;
+  background: linear-gradient(180deg,
+    rgba(242, 232, 215, 0.94) 0%,
+    rgba(242, 232, 215, 0.78) 55%,
+    rgba(242, 232, 215, 0) 100%);
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.past-hero #siteHeader::before { opacity: 1; }
+
+.past-hero .nav-link,
+.past-hero .lang-btn,
+.past-hero #siteHeader .icon-btn { color: var(--s2-maroon); }
+
+.past-hero .nav-link::after { background: var(--s2-maroon); }
+
+.past-hero .lang-sep,
+.past-hero .utils-divider { background: rgba(90, 23, 18, 0.35); }
+
+.past-hero .header-rule {
+  background: linear-gradient(90deg,
+    rgba(90, 23, 18, 0) 0%,
+    rgba(90, 23, 18, 0.26) 14%,
+    rgba(90, 23, 18, 0.26) 86%,
+    rgba(90, 23, 18, 0) 100%);
+}
+
+.past-hero #siteHeader .cart-count { background: var(--s2-maroon); color: #F2E4CA; }
+
+.nav-link,
+.lang-btn,
+.icon-btn { transition-property: opacity, transform, color; }
+
+#logoSlot {
+  position: absolute;
+  left: 5.6%;
+  top: calc(6.6vh - var(--logo-land-d) / 2);
+  width: var(--logo-land-d);
+  height: var(--logo-land-d);
+  pointer-events: none;
+}
+
+.header-rule {
+  position: absolute;
+  left: 5.6%;
+  right: 5.6%;
+  top: 10.8vh;
+  height: 1px;
+  background: linear-gradient(90deg,
+    rgba(243, 230, 208, 0) 0%,
+    rgba(243, 230, 208, 0.32) 14%,
+    rgba(243, 230, 208, 0.32) 86%,
+    rgba(243, 230, 208, 0) 100%);
+  transform-origin: 50% 50%;
+}
+
+#mainNav {
+  position: absolute;
+  left: 50%;
+  top: 5.2vh;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: baseline;
+  gap: 2.5vw;
+  white-space: nowrap;
+}
+
+.nav-link {
+  position: relative;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: clamp(10px, 1.43vh, 13px);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--text-cream);
+  text-decoration: none;
+  opacity: 0.82;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0.24em;                 /* optical: ignore trailing tracking */
+  bottom: -0.75em;
+  height: 1px;
+  background: var(--text-cream);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link:hover { opacity: 1; }
+.nav-link:hover::after,
+.nav-link.is-active::after { transform: scaleX(1); }
+.nav-link.is-active { opacity: 1; }
+
+.nav-link:focus-visible,
+.icon-btn:focus-visible,
+.lang-btn:focus-visible,
+.cta:focus-visible {
+  outline: 1px solid rgba(243, 230, 208, 0.7);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* — right utility cluster — */
+
+.header-utils {
+  position: absolute;
+  right: 5.6%;
+  top: 5.2vh;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1.15vw;   /* tightened when the wishlist icon joined the cluster */
+}
+
+.lang-switch {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+}
+
+.lang-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(10px, 1.43vh, 13px);
+  letter-spacing: 0.14em;
+  line-height: 1;
+  color: var(--text-cream);
+  opacity: 0.5;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lang-btn[lang="te"] {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-weight: 400;
+  font-size: clamp(11px, 1.55vh, 14px);
+  letter-spacing: 0.02em;
+}
+
+.lang-btn:hover { opacity: 0.85; }
+
+.lang-btn.is-active {
+  opacity: 1;
+  cursor: default;
+}
+
+.lang-sep {
+  width: 1px;
+  height: 1em;
+  background: rgba(243, 230, 208, 0.4);
+  transform: rotate(18deg);
+  align-self: center;
+}
+
+.utils-divider {
+  width: 1px;
+  height: 2.1vh;
+  background: rgba(243, 230, 208, 0.25);
+}
+
+.icon-btn {
+  position: relative;
+  width: clamp(18px, 2.55vh, 23px);
+  height: clamp(18px, 2.55vh, 23px);
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-cream);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.icon-btn:hover { opacity: 1; transform: translateY(-1px); }
+.icon-btn svg { width: 100%; height: 100%; display: block; }
+
+/* utility icons that navigate (bag, wishlist, account) are anchors */
+a.icon-btn { display: inline-block; text-decoration: none; }
+
+.menu-btn { display: none; }
+
+.cart-count {
+  position: absolute;
+  top: -30%;
+  right: -38%;
+  min-width: 1.45em;
+  height: 1.45em;
+  display: grid;
+  place-items: center;
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+  font-size: clamp(8px, 1.15vh, 11px);
+  line-height: 1;
+  color: #4A1208;
+  background: var(--ivory);
+  border-radius: 50%;
+}
+
+/* ─────────── copy column ─────────── */
+
+.hero-copy {
+  position: absolute;
+  left: 11.6%;
+  top: 26vh;
+  z-index: 5;
+  max-width: 42%;
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(12px, 1.9vh, 18px);
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--text-cream);
+  opacity: 0.94;
+}
+
+.display {
+  position: relative;
+  margin: 0.5vh 0 0 -0.05em;
+  height: 13.6vh;                /* fixed box: language switch never reflows */
+  font-family: 'Cormorant', 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(64px, 12.9vh, 126px);
+  line-height: 0.98;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  color: #F4E3C8;
+}
+
+.display-word { display: inline-block; }
+
+.swash {
+  position: absolute;
+  left: 3%;
+  top: 66%;
+  width: 97%;
+  max-width: 30vw;
+  height: auto;
+  color: #F4E3C8;
+  pointer-events: none;
+}
+
+.subline {
+  margin: 3.15vh 0 0;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(11px, 1.67vh, 16px);
+  letter-spacing: 0.34em;
+  line-height: 1.55;
+  text-transform: uppercase;
+  color: var(--text-cream);
+  opacity: 0.92;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.4em;
+  margin-top: 3.6vh;
+  height: clamp(42px, 5.55vh, 53px);
+  padding: 0 1.9em;
+  border-radius: 999px;
+  background: #F2E4CA;
+  color: #4A1208;
+  text-decoration: none;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: clamp(10px, 1.45vh, 14px);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 30px rgba(12, 2, 1, 0.35);
+  transition: background 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cta svg {
+  width: 1.85em;
+  flex: none;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cta:hover {
+  background: #F8ECD6;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 38px rgba(12, 2, 1, 0.45);
+}
+
+.cta:hover svg { transform: translateX(6px); }
+.cta:active { transform: translateY(0) scale(0.985); }
+
+/* ─────────── the Baramasi standard (design statement) ─────────── */
+
+.signature {
+  margin-top: 4.2vh;
+}
+
+.signature-head {
+  display: flex;
+  align-items: center;
+  gap: 1.6em;
+  margin-bottom: 2.5vh;
+}
+
+.signature-overline {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(9px, 1.25vh, 12px);
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--text-cream);
+  opacity: 0.78;
+  white-space: nowrap;
+}
+
+.signature-rule {
+  width: 8.5em;
+  height: 1px;
+  background: linear-gradient(90deg,
+    rgba(243, 230, 208, 0.45) 0%,
+    rgba(243, 230, 208, 0) 100%);
+  transform-origin: left center;
+}
+
+.signature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 10.5em);
+  column-gap: 2.4em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.signature-grid li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.6vh;
+}
+
+.f-icon {
+  width: clamp(20px, 3vh, 27px);
+  height: auto;
+  color: var(--text-cream);
+  opacity: 0.9;
+}
+
+.signature-grid span {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(9px, 1.3vh, 13px);
+  letter-spacing: 0.27em;
+  line-height: 1.7;
+  text-transform: uppercase;
+  color: var(--text-cream);
+  opacity: 0.9;
+}
+
+/* ─────────── right column, script, scroll ─────────── */
+
+.hero-side {
+  position: absolute;
+  left: 84.55%;
+  top: 20.3vh;
+  z-index: 5;
+}
+
+.hero-side p {
+  margin: 0;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(10px, 1.56vh, 15px);
+  letter-spacing: 0.32em;
+  line-height: 1.62;
+  text-transform: uppercase;
+  color: var(--text-cream);
+  opacity: 0.95;
+}
+
+.side-rule {
+  display: block;
+  width: 3em;
+  height: 1px;
+  margin-top: 2.4vh;
+  background: rgba(243, 230, 208, 0.75);
+}
+
+.hero-script {
+  position: absolute;
+  left: 88.4%;
+  top: 84vh;
+  z-index: 5;
+  transform: rotate(-6deg);
+  color: #F0DFC6;
+}
+
+.hero-script p {
+  margin: 0;
+  font-family: 'Great Vibes', cursive;
+  font-weight: 400;
+  font-size: clamp(20px, 3.4vh, 33px);
+  line-height: 1.12;
+  white-space: nowrap;
+}
+
+.hero-script svg {
+  width: 62%;
+  margin: 0.6vh 0 0 8%;
+  color: #F0DFC6;
+}
+
+.hero-scroll {
+  position: absolute;
+  left: 50%;
+  top: 88.2vh;
+  z-index: 5;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4vh;
+  color: var(--text-cream);
+  opacity: 0.92;
+}
+
+.hero-scroll svg { width: clamp(18px, 2.9vh, 27px); }
+
+.hero-scroll span {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(9px, 1.34vh, 13px);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ─────────── हिन्दी typography ───────────
+   Devanagari needs looser line-height than Latin;
+   Tiro Devanagari Hindi carries the premium serif voice. */
+
+.lang-hi .nav-link,
+.lang-hi .lang-btn[data-lang="en"] { text-transform: none; }
+
+.lang-hi .nav-link {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-weight: 400;
+  font-size: clamp(10px, 1.4vh, 13px);
+  letter-spacing: 0.02em;
+}
+
+.lang-hi #mainNav { gap: 1.5vw; }
+
+.lang-hi .eyebrow {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  font-size: clamp(11px, 1.75vh, 17px);
+}
+
+.lang-hi .display {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-weight: 600;
+  font-size: clamp(44px, 8.9vh, 88px);
+  line-height: 1.32;
+  letter-spacing: 0.01em;
+}
+
+.lang-hi .swash { width: 74%; }
+
+.lang-hi .subline {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1.75;
+  font-size: clamp(11px, 1.62vh, 16px);
+  text-transform: none;
+}
+
+.lang-hi .cta span {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  font-size: clamp(11px, 1.55vh, 15px);
+  text-transform: none;
+}
+
+.lang-hi .signature-overline,
+.lang-hi .signature-grid span {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-weight: 400;
+  text-transform: none;
+}
+
+.lang-hi .signature-overline { letter-spacing: 0.14em; }
+
+.lang-hi .signature-grid span {
+  letter-spacing: 0.05em;
+  line-height: 1.8;
+  font-size: clamp(10px, 1.42vh, 14px);
+}
+
+.lang-hi .hero-scroll span {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  letter-spacing: 0.06em;
+  text-transform: none;
+}
+
+/* ── collection cards are links: the whole card invites the tap ── */
+
+.na-card, .or-card, .sc-card, .bs-item { cursor: pointer; }
+
+@media (hover: none) {
+  .na-card, .or-card, .sc-card, .bs-item {
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* quiet press feedback — the transition lives only on the pressed
+     state so it can never fight the gsap entrance transforms */
+  .na-card:active, .or-card:active, .sc-card:active, .bs-item:active {
+    transform: scale(0.985);
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* narrower desktops: keep the nav clear of the utility cluster
+   (the cluster grew a wishlist icon, so the tightening starts earlier) */
+@media (max-width: 1460px) {
+  #mainNav { gap: 1.25vw; }
+  .header-utils { gap: 0.9vw; }
+  .nav-link { letter-spacing: 0.14em; }
+  .lang-btn { letter-spacing: 0.06em; }
+}
+
+@media (max-width: 1150px) and (min-width: 1025px) {
+  #mainNav { gap: 1.05vw; }
+  .header-utils { gap: 0.85vw; }
+  .nav-link { letter-spacing: 0.13em; }
+}
+
+/* ─────────── mobile (interim until the mobile reference arrives) ─────────── */
+
+@media (max-width: 1024px) {
+  :root { --hero-fx: 0.62; }
+
+  #mainNav { display: none; }
+  .header-rule { display: none; }
+  .utils-divider { display: none; }
+  #siteHeader .account-btn { display: none; }   /* account lives in the menu */
+  #siteHeader .wish-btn { display: none; }      /* wishlist lives in the menu */
+  #siteHeader .lang-switch { display: none; }   /* language lives in the menu */
+  .menu-btn { display: block; }
+
+  #logoSlot {
+    left: 16px;
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
+    width: clamp(60px, 17vw, 80px);
+    height: clamp(60px, 17vw, 80px);
+  }
+
+  .header-utils {
+    right: 5%;
+    top: calc(env(safe-area-inset-top, 0px) + 34px);
+    gap: 22px;
+  }
+
+  #siteHeader .icon-btn { width: 24px; height: 24px; }
+
+  .hero-copy {
+    left: 7.5%;
+    top: 24vh;
+    max-width: 85%;
+  }
+
+  .display { font-size: clamp(56px, 17vw, 92px); height: auto; min-height: 13.6vh; }
+  .lang-hi .display { font-size: clamp(40px, 12vw, 70px); }
+  .swash { max-width: 76vw; }
+  .subline { margin-top: 6vh; }
+
+  .signature { margin-top: 5vh; }
+  .signature-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 6%;
+  }
+  .signature-grid span { letter-spacing: 0.18em; }
+
+  .hero-side { display: none; }
+  .hero-script { left: auto; right: 6%; top: auto; bottom: 9vh; }
+  .hero-scroll { display: none; }
+}
+
+/* ─────────── mobile menu overlay ─────────── */
+
+#mobileMenu {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: linear-gradient(168deg, #F2E8D8 0%, #EBDCC7 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              visibility 0s linear 0.4s;
+  padding: calc(env(safe-area-inset-top, 0px) + 4vh) 8% calc(env(safe-area-inset-bottom, 0px) + 5vh);
+}
+
+#mobileMenu.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#mobileMenu .mm-link,
+#mobileMenu .mm-rule,
+#mobileMenu .mm-lang,
+#mobileMenu .mm-ig {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#mobileMenu.is-open .mm-link,
+#mobileMenu.is-open .mm-rule,
+#mobileMenu.is-open .mm-lang,
+#mobileMenu.is-open .mm-ig {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#mobileMenu.is-open .mm-link:nth-child(1) { transition-delay: 0.06s; }
+#mobileMenu.is-open .mm-link:nth-child(2) { transition-delay: 0.11s; }
+#mobileMenu.is-open .mm-link:nth-child(3) { transition-delay: 0.16s; }
+#mobileMenu.is-open .mm-link:nth-child(4) { transition-delay: 0.21s; }
+#mobileMenu.is-open .mm-link:nth-child(5) { transition-delay: 0.26s; }
+#mobileMenu.is-open .mm-link:nth-child(6) { transition-delay: 0.31s; }
+#mobileMenu.is-open .mm-link:nth-child(7) { transition-delay: 0.36s; }
+#mobileMenu.is-open .mm-link:nth-child(8) { transition-delay: 0.41s; }
+#mobileMenu.is-open .mm-link:nth-child(9) { transition-delay: 0.46s; }
+#mobileMenu.is-open .mm-rule { transition-delay: 0.5s; }
+#mobileMenu.is-open .mm-lang { transition-delay: 0.54s; }
+#mobileMenu.is-open .mm-ig { transition-delay: 0.58s; }
+
+.mm-close {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 18px);
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(90, 23, 18, 0.35);
+  border-radius: 50%;
+  background: none;
+  color: var(--s2-maroon);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mm-close svg { width: 40%; }
+.mm-close:active { background: rgba(90, 23, 18, 0.08); }
+
+.mm-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.4vh;
+}
+
+.mm-link {
+  font-family: 'Cormorant', Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(26px, 3.8vh, 34px);
+  letter-spacing: 0.04em;
+  color: #5A1210;
+  text-decoration: none;
+  line-height: 1;
+  padding: 0.5vh 1em;
+}
+
+.mm-link:active { opacity: 0.6; }
+
+.lang-hi .mm-link,
+.mm-link:lang(te) { font-family: 'Tiro Devanagari Hindi', serif; }
+
+.mm-rule {
+  width: 15vw;
+  max-width: 90px;
+  height: 1px;
+  margin: 4.5vh 0 3.2vh;
+  background: rgba(90, 23, 18, 0.4);
+}
+
+.mm-lang .lang-btn { color: var(--s2-maroon); font-size: 15px; }
+.mm-lang .lang-sep { background: rgba(90, 23, 18, 0.4); }
+
+.mm-ig {
+  margin-top: 3.4vh;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(90, 23, 18, 0.75);
+  text-decoration: none;
+}
+
+body.menu-open { overflow: hidden; }

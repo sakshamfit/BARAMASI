@@ -1,0 +1,459 @@
+/* ═══════════════════════════════════════════════
+   BARAMASI — section 5: Best Sellers.
+   Arch-topped staircase rebuilt live from the
+   1600×900 reference.
+   ═══════════════════════════════════════════════ */
+
+.bs {
+  position: relative;
+  min-height: 100svh;
+  background: linear-gradient(162deg, #F2E7D6 0%, #EEE0CC 54%, #E9D8C3 100%);
+  color: var(--s2-maroon);
+  overflow: hidden;
+}
+
+/* ── living decor ── */
+
+.bs-shadow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: clamp(200px, 22vw, 360px);
+  aspect-ratio: 315 / 205;
+  background: url('../assets/img/leaf-shadow-3.jpg') center / cover no-repeat;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.bs-bowls {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: clamp(190px, 21vw, 350px);
+  pointer-events: none;
+  z-index: 2;
+  will-change: transform;
+}
+
+.bs-bowls img { width: 100%; height: auto; display: block; }
+
+/* ── top-right statement ── */
+
+.bs-side {
+  position: absolute;
+  right: 4%;
+  top: 8vh;
+  z-index: 3;
+  margin: 0;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(10px, 1.5vh, 14px);
+  letter-spacing: 0.3em;
+  line-height: 1.95;
+  text-transform: uppercase;
+  color: var(--s2-maroon);
+}
+
+.bs-side::after {
+  content: '';
+  display: block;
+  width: 3em;
+  height: 1px;
+  margin-top: 1.8vh;
+  background: rgba(90, 23, 18, 0.5);
+}
+
+/* ── left editorial ── */
+
+.bs-intro {
+  position: absolute;
+  left: 4.7%;
+  top: 23.5vh;
+  z-index: 3;
+  width: 16.2%;
+}
+
+.bs-eyebrow {
+  margin: 0;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: clamp(10px, 1.45vh, 14px);
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--s2-maroon);
+}
+
+.bs-heading {
+  margin: 1.6vh 0 0;
+  font-family: 'Cormorant', Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(44px, 9.2vh, 86px);
+  line-height: 1.02;
+  letter-spacing: 0.005em;
+  color: #5A1210;
+}
+
+.bs-divider {
+  display: flex;
+  align-items: center;
+  gap: 1.1em;
+  margin-top: 2.8vh;
+}
+
+.bs-divider::before,
+.bs-divider::after {
+  content: '';
+  width: clamp(34px, 3.4vw, 62px);
+  height: 1px;
+  background: rgba(90, 23, 18, 0.45);
+}
+
+.bs-divider .or-ornament {
+  width: clamp(13px, 1.9vh, 17px);
+  color: #A5493B;
+}
+
+.bs-support {
+  margin: 2.6vh 0 0;
+  max-width: 17em;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(14px, 2.05vh, 20px);
+  line-height: 1.55;
+  color: rgba(87, 19, 16, 0.88);
+}
+
+.bs-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5em;
+  margin-top: 3.6vh;
+  text-decoration: none;
+  color: var(--s2-maroon);
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: clamp(10px, 1.45vh, 14px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.bs-cta .sc-cta-circle {
+  width: clamp(40px, 6vh, 56px);
+  height: clamp(40px, 6vh, 56px);
+}
+
+.bs-statement {
+  margin: 4.6vh 0 0;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(9px, 1.35vh, 13px);
+  letter-spacing: 0.3em;
+  line-height: 2.05;
+  text-transform: uppercase;
+  color: rgba(90, 23, 18, 0.85);
+}
+
+/* ── the staircase ── */
+
+.bs-rail {
+  position: absolute;
+  left: 21.6%;
+  right: 1.5%;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.56vw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  z-index: 2;
+}
+
+.bs-item {
+  flex: 1 1 0;
+  min-width: 0;
+  margin-top: var(--step);
+  cursor: pointer;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bs-label {
+  height: 9.5vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.7vh;
+  padding-bottom: 1.7vh;
+  text-align: center;
+}
+
+.bs-num {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(9px, 1.3vh, 12px);
+  letter-spacing: 0.3em;
+  color: rgba(90, 23, 18, 0.7);
+  transition: color 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bs-color {
+  margin: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(12px, 1.95vh, 19px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #4A1208;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bs-desc {
+  margin: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  font-style: italic;
+  font-size: clamp(11px, 1.7vh, 16px);
+  color: rgba(87, 19, 16, 0.8);
+  transition: color 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bs-arch {
+  position: relative;
+  height: var(--arch-h);
+  border-radius: 999px 999px 0 0;
+  overflow: hidden;
+  background: #C9B295;
+  box-shadow: 0 22px 44px -16px rgba(64, 12, 8, 0);
+  transition: box-shadow 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bs-arch::after {
+  content: '';
+  position: absolute;
+  inset: 8px 8px 0 8px;
+  border-radius: 999px 999px 0 0;
+  border: 1px solid rgba(242, 228, 202, 0.8);
+  border-bottom: none;
+  opacity: 0;
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.bs-arch img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bs-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(24, 10, 5, 0.42) 0%, rgba(24, 10, 5, 0) 26%);
+  pointer-events: none;
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0.75;
+}
+
+.bs-shop {
+  position: absolute;
+  left: 50%;
+  bottom: 2.4vh;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9em;
+  color: #F6ECDA;
+  text-decoration: none;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(8px, 1.25vh, 12px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0.85;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bs-plus {
+  display: grid;
+  place-items: center;
+  width: clamp(26px, 3.9vh, 36px);
+  height: clamp(26px, 3.9vh, 36px);
+  border-radius: 50%;
+  border: 1px solid rgba(246, 236, 218, 0.75);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bs-plus svg { width: 44%; }
+
+.bs-shop:hover { opacity: 1; }
+.bs-shop:hover .bs-plus { transform: rotate(90deg); background: rgba(246, 236, 218, 0.14); }
+
+/* ── spotlight (shared language) ── */
+
+.bs-item.is-hot { transform: translateY(-8px); }
+.bs-item.is-active { transform: translateY(-12px); }
+
+.bs-item.is-hot .bs-arch { box-shadow: 0 24px 46px -16px rgba(64, 12, 8, 0.33); }
+.bs-item.is-active .bs-arch { box-shadow: 0 28px 54px -16px rgba(64, 12, 8, 0.44); }
+
+.bs-item.is-hot .bs-arch::after { opacity: 0.55; }
+.bs-item.is-active .bs-arch::after { opacity: 1; }
+
+.bs-item.is-hot .bs-arch img { transform: scale(1.03); }
+.bs-item.is-active .bs-arch img {
+  transform: scale(1.045);
+  filter: brightness(1.035) saturate(1.02);
+}
+
+.bs-item.is-hot .bs-scrim,
+.bs-item.is-active .bs-scrim { opacity: 1; }
+
+.bs-item.is-hot .bs-color,
+.bs-item.is-active .bs-color { transform: scale(1.06); }
+
+.bs-item.is-hot .bs-num,
+.bs-item.is-active .bs-num { color: rgba(90, 23, 18, 1); }
+
+.bs-item.is-hot .bs-desc,
+.bs-item.is-active .bs-desc { color: rgba(87, 19, 16, 1); }
+
+.bs-item.is-hot .bs-shop,
+.bs-item.is-active .bs-shop { opacity: 1; }
+
+.bs-item.is-active .bs-plus { transform: rotate(90deg); }
+
+.bs-rail.has-spotlight .bs-item:not(.is-hot):not(.is-active) { opacity: 0.8; }
+
+.bs-item:focus-visible {
+  outline: 1px solid rgba(90, 23, 18, 0.7);
+  outline-offset: 4px;
+}
+
+/* ── bottom navigation ── */
+
+.bs-nav {
+  position: absolute;
+  right: 3%;
+  bottom: 3.4vh;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 1.3vw;
+}
+
+.bs-count {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55em;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(14px, 2.1vh, 20px);
+  color: var(--s2-maroon);
+}
+
+.bs-count .bs-total { opacity: 0.55; font-size: 0.8em; }
+
+/* ── हिन्दी ── */
+
+.lang-hi .bs-eyebrow,
+.lang-hi .bs-side,
+.lang-hi .bs-statement,
+.lang-hi .bs-cta,
+.lang-hi .bs-shop span:last-child,
+.lang-hi .bs-color {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  text-transform: none;
+  letter-spacing: 0.07em;
+}
+
+.lang-hi .bs-heading {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-size: clamp(30px, 6vh, 58px);
+  line-height: 1.32;
+}
+
+.lang-hi .bs-support,
+.lang-hi .bs-desc {
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-style: normal;
+  line-height: 1.7;
+}
+
+.lang-hi .bs-side { line-height: 1.9; letter-spacing: 0.1em; }
+
+/* ── responsive (interim until mobile references arrive) ── */
+
+@media (max-width: 1100px) {
+  .bs { min-height: 0; padding: calc(env(safe-area-inset-top, 0px) + 108px) 0 6vh; }
+
+  .bs-side {
+    position: relative;
+    right: 0;
+    top: 0;
+    margin: 0 8%;
+    text-align: center;
+  }
+
+  .bs-side::after { margin: 1.8vh auto 0; }
+
+  .bs-intro {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: auto;
+    margin: 4vh 8% 0;
+  }
+
+  .bs-rail {
+    position: relative;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin-top: 5vh;
+    padding: 0 6% 3vh;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    scrollbar-width: none;
+  }
+
+  .bs-rail::-webkit-scrollbar { display: none; }
+
+  .bs-item {
+    flex: 0 0 54vw;
+    scroll-snap-align: center;
+    margin-top: calc(var(--step) * 0.28);
+  }
+
+  .bs-arch { height: 52vh; }
+  .bs-label { height: 8vh; }
+
+  .bs-nav {
+    position: relative;
+    right: 0;
+    bottom: 0;
+    justify-content: center;
+    margin-top: 5vh;
+  }
+
+  .bs-bowls { display: none; }
+}
+
+@media (max-width: 640px) {
+  .bs-item { flex: 0 0 74vw; margin-top: 0; }
+  .bs-arch { height: 56vh; }
+}

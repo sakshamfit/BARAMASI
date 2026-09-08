@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Create Account — BARAMASI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600&family=Cormorant+Garamond:wght@400;500;600&family=Great+Vibes&family=Jost:wght@300;400;500&family=Tiro+Devanagari+Hindi:wght@400;600&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/commerce.css">
+</head>
+<body class="commerce past-hero" data-page="signup">
+
+  <header id="siteHeader"></header>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <p class="com-eyebrow">BARAMASI — Clothing Store, Bettiah</p>
+      <h1 class="com-h1" data-i18n="com.signup.h">Join BARAMASI</h1>
+      <p class="com-sub" data-i18n="com.signup.sub">Create an account to place your order.</p>
+
+      <form id="authForm" class="auth-form" novalidate>
+        <div class="cf-row">
+          <label for="suEmail" data-i18n="com.email">Email</label>
+          <input id="suEmail" name="email" type="email" autocomplete="email" inputmode="email">
+        </div>
+        <div class="cf-row">
+          <label for="suPass" data-i18n="com.password">Password</label>
+          <input id="suPass" name="password" type="password" autocomplete="new-password">
+        </div>
+        <div class="cf-row">
+          <label for="suConfirm" data-i18n="com.confirm">Confirm Password</label>
+          <input id="suConfirm" name="confirm" type="password" autocomplete="new-password">
+        </div>
+        <span id="authErr" class="cf-err" role="alert" aria-live="polite"></span>
+        <button type="submit" class="ct-btn auth-submit">
+          <span data-i18n="com.signupBtn">Create Account</span>
+          <svg viewBox="0 0 26 12" fill="none" aria-hidden="true"><path d="M1 6h23m0 0-4.6-4.6M24 6l-4.6 4.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+
+      <p class="auth-alt">
+        <span data-i18n="com.haveAccount">Already have an account?</span>
+        <a href="login.html" data-i18n="com.toLogin">Log in</a>
+      </p>
+    </div>
+  </main>
+
+  <script type="module" src="js/commerce.js"></script>
+</body>
+</html>

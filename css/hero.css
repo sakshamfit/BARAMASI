@@ -55,14 +55,19 @@
   will-change: transform;
 }
 
-/* gentle scrims — legibility for the header and base, per reference lighting */
+/* gentle scrims — legibility for the header and base, per reference lighting.
+   The copy column sits over a busy storefront, so a soft left-to-right
+   grade keeps the cream type clean; the image itself is served pre-blurred
+   (hero-blur.jpg) so any baked signage reads as texture, not text. */
 .hero-grade {
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(26, 4, 2, 0.55) 0%, rgba(26, 4, 2, 0) 20%),
-    linear-gradient(0deg, rgba(22, 4, 2, 0.32) 0%, rgba(22, 4, 2, 0) 12%);
+    linear-gradient(90deg, rgba(20, 4, 2, 0.58) 0%, rgba(20, 4, 2, 0.32) 44%, rgba(20, 4, 2, 0) 74%),
+    linear-gradient(180deg, rgba(26, 4, 2, 0.55) 0%, rgba(26, 4, 2, 0) 22%),
+    linear-gradient(0deg, rgba(22, 4, 2, 0.36) 0%, rgba(22, 4, 2, 0) 14%),
+    rgba(16, 3, 2, 0.16);
 }
 
 /* ─────────── header (couture single tier) ─────────── */

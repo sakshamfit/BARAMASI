@@ -70,6 +70,16 @@
 .ct-btn:hover svg { transform: translateX(5px); }
 .ct-btn:active { transform: translateY(0); }
 
+/* WhatsApp ordering — the same CTA, in WhatsApp green */
+.ct-btn.ci-wa {
+  background: #25D366;
+  color: #06351C;
+  box-shadow: 0 10px 26px rgba(6, 53, 28, 0.2);
+}
+
+.ct-btn.ci-wa:hover { background: #1DA851; }
+.ct-btn.ci-wa svg { width: 1.5em; }
+
 .ct-btn:focus-visible,
 .ci-link:focus-visible,
 .ci-social:focus-visible,

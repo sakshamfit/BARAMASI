@@ -9,6 +9,7 @@
    ═══════════════════════════════════════════════ */
 
 import { registerReveal } from './scroll.js';
+import { waLink, WHATSAPP_DISPLAY, WA_GREETING } from './brand.js';
 
 /* every piece of contact data lives here — update once, applies everywhere.
    Source: the store's Google listing (kept in the BARAMASI project's
@@ -36,6 +37,13 @@ function applyBrand() {
   if (listing) listing.href = BRAND.listingUrl;
   const menuLink = document.querySelector('.mm-ig');
   if (menuLink) menuLink.href = BRAND.listingUrl;
+
+  /* WhatsApp ordering line — number lives in js/brand.js */
+  const waUrl = waLink(WA_GREETING + ' I have a question about the store.');
+  const waNumber = document.getElementById('ctWa');
+  if (waNumber) { waNumber.href = waUrl; waNumber.textContent = WHATSAPP_DISPLAY; }
+  const waBtn = document.getElementById('ctWaBtn');
+  if (waBtn) waBtn.href = waUrl;
 }
 
 /* ---------- reveals (scroll-triggered, same grammar) ---------- */

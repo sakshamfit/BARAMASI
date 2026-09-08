@@ -592,6 +592,30 @@ body.menu-open { overflow: hidden; }
 
 .cs-checkout { width: 100%; }
 
+/* ── WhatsApp ordering buttons — the brand CTA shape, WhatsApp green ── */
+
+.commerce .ct-btn.pd-wa,
+.commerce .ct-btn.cs-wa,
+.commerce .ct-btn.ok-wa {
+  background: #25D366;
+  color: #06351C;
+  box-shadow: 0 10px 26px rgba(6, 53, 28, 0.2);
+}
+
+.commerce .ct-btn.pd-wa:hover,
+.commerce .ct-btn.cs-wa:hover,
+.commerce .ct-btn.ok-wa:hover {
+  background: #1DA851;
+  box-shadow: 0 14px 30px rgba(6, 53, 28, 0.28);
+}
+
+.commerce .ct-btn.pd-wa svg,
+.commerce .ct-btn.cs-wa svg,
+.commerce .ct-btn.ok-wa svg { width: 1.5em; }
+
+.pd-wa { width: 100%; margin-bottom: 1.6vh; }
+.cs-wa { width: 100%; margin-top: 1.4vh; }
+
 /* ── checkout ── */
 
 .ck-banner {

@@ -490,6 +490,9 @@ function applyStrings(lang) {
     btn.classList.toggle('is-active', active);
     btn.setAttribute('aria-pressed', String(active));
   }
+
+  /* layout work that depends on the live copy (e.g. the hero display fit) */
+  document.dispatchEvent(new CustomEvent('baramasi:lang', { detail: lang }));
 }
 
 export function setLang(lang, animate = true) {

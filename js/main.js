@@ -4,6 +4,7 @@
 
 import { startIntro } from './intro.js';
 import { initI18n } from './i18n.js';
+import { initHeroFit } from './herofit.js';
 import { renderSection2, initSection2 } from './section2.js';
 import { renderSection3, initSection3 } from './section3.js';
 import { renderSection4, initSection4 } from './section4.js';
@@ -53,6 +54,7 @@ function boot() {
   renderSection4();
   renderSection5();
   initI18n();      /* stored language applies before the reveal */
+  initHeroFit();   /* the hero display never wraps into the subline */
   initSmoothScroll(reduced, !returning);
   initSection2(settled);
   initSection3(settled);

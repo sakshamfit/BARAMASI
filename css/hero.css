@@ -322,25 +322,42 @@ a.icon-btn { display: inline-block; text-decoration: none; }
 .display {
   position: relative;
   margin: 0.5vh 0 0 -0.05em;
-  height: 13.6vh;                /* fixed box: language switch never reflows */
+  /* reserved box: the EN↔HI swap never reflows the column, but the box can
+     grow if a line ever needs more room — it must never clip into the subline */
+  min-height: 13.6vh;
   font-family: 'Cormorant', 'Cormorant Garamond', Georgia, serif;
   font-weight: 500;
-  font-size: clamp(64px, 12.9vh, 126px);
+  /* --display-fs is the designed size; --display-fit is the shrink factor the
+     hero fitter applies when the word is wider than the copy column */
+  --display-fs: clamp(64px, min(12.9vh, 8vw), 126px);   /* vw term = no-JS safety net */
+  font-size: calc(var(--display-fs) * var(--display-fit, 1));
   line-height: 0.98;
   letter-spacing: 0.005em;
   text-transform: uppercase;
   color: #F4E3C8;
 }
 
+/* the word + its swash travel together, so the swash always measures the word */
+.display-line {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
 .display-word { display: inline-block; }
+
+/* desktop: the display stays on one line — the fitter scales it to fit */
+@media (min-width: 1025px) {
+  .display-word { white-space: nowrap; }
+}
 
 .swash {
   position: absolute;
-  left: 3%;
-  top: 66%;
-  width: 97%;
-  max-width: 30vw;
-  height: auto;
+  left: 0.5%;
+  bottom: -0.06em;               /* tucks under the word, never into the subline */
+  width: 99%;                    /* the word's width — the wrapper measures it */
+  height: 0.66em;
+  overflow: visible;
   color: #F4E3C8;
   pointer-events: none;
 }
@@ -565,12 +582,10 @@ a.icon-btn { display: inline-block; text-decoration: none; }
 .lang-hi .display {
   font-family: 'Tiro Devanagari Hindi', serif;
   font-weight: 600;
-  font-size: clamp(44px, 8.9vh, 88px);
+  --display-fs: clamp(44px, min(8.9vh, 6vw), 88px);
   line-height: 1.32;
   letter-spacing: 0.01em;
 }
-
-.lang-hi .swash { width: 74%; }
 
 .lang-hi .subline {
   font-family: 'Tiro Devanagari Hindi', serif;
@@ -675,9 +690,9 @@ a.icon-btn { display: inline-block; text-decoration: none; }
     max-width: 85%;
   }
 
-  .display { font-size: clamp(56px, 17vw, 92px); height: auto; min-height: 13.6vh; }
-  .lang-hi .display { font-size: clamp(40px, 12vw, 70px); }
-  .swash { max-width: 76vw; }
+  .display { --display-fs: clamp(56px, 17vw, 92px); min-height: 13.6vh; }
+  .lang-hi .display { --display-fs: clamp(40px, 12vw, 70px); }
+  .swash { height: 0.6em; }
   .subline { margin-top: 6vh; }
 
   .signature { margin-top: 5vh; }

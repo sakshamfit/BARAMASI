@@ -55,20 +55,24 @@ create table if not exists public.products (
 
 alter table public.products enable row level security;
 
--- 2 ── product policies ─────────────────────────────────────────
+-- 2 ── product policies (safe to re-run) ──────────────────────────
+drop policy if exists "products are publicly readable" on public.products;
 create policy "products are publicly readable"
   on public.products for select
   using (true);
 
+drop policy if exists "admin can insert products" on public.products;
 create policy "admin can insert products"
   on public.products for insert
   with check (auth.uid() is not null);
 
+drop policy if exists "admin can update products" on public.products;
 create policy "admin can update products"
   on public.products for update
   using (auth.uid() is not null)
   with check (auth.uid() is not null);
 
+drop policy if exists "admin can delete products" on public.products;
 create policy "admin can delete products"
   on public.products for delete
   using (auth.uid() is not null);
@@ -76,20 +80,29 @@ create policy "admin can delete products"
 -- 3 ── product-images bucket ────────────────────────────────────
 insert into storage.buckets (id, name, public)
 values ('product-images', 'product-images', true)
-on conflict (id) do nothing;
+on conflict (id) do update set public = true;
 
+-- belt: a bucket once flipped to private silently breaks every storefront
+-- image (uploads still succeed, but nothing is publicly visible) — force it
+-- back to public on every run of this file.
+update storage.buckets set public = true where id = 'product-images';
+
+drop policy if exists "product images are publicly readable" on storage.objects;
 create policy "product images are publicly readable"
   on storage.objects for select
   using (bucket_id = 'product-images');
 
+drop policy if exists "admin can upload product images" on storage.objects;
 create policy "admin can upload product images"
   on storage.objects for insert
   with check (bucket_id = 'product-images' and auth.uid() is not null);
 
+drop policy if exists "admin can update product images" on storage.objects;
 create policy "admin can update product images"
   on storage.objects for update
   using (bucket_id = 'product-images' and auth.uid() is not null);
 
+drop policy if exists "admin can delete product images" on storage.objects;
 create policy "admin can delete product images"
   on storage.objects for delete
   using (bucket_id = 'product-images' and auth.uid() is not null);

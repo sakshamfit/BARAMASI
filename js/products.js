@@ -658,6 +658,17 @@ const changeListeners = [];
 export function onProductsChange(fn) { changeListeners.push(fn); }
 export function isLive() { return liveLoaded; }
 
+/* shown when a row has no usable photo (or a stale broken URL) — a local
+   file, so it renders even while Supabase storage is unreachable */
+const FALLBACK_IMG = 'assets/img/shade/neutrals.jpg';
+
+function cleanPhotoUrl(u) {
+  const s = String(u || '').trim();
+  if (!s || s === 'null' || s === 'undefined') return '';
+  /* older uploads could contain spaces — encode so <img> can fetch them */
+  return /^https?:\/\//i.test(s) ? s.replace(/ /g, '%20') : s;
+}
+
 /* a Supabase row → the exact product shape every surface expects */
 export function mapRow(r) {
   return {
@@ -672,8 +683,8 @@ export function mapRow(r) {
     bestSeller: !!r.best_seller,
     rating: null,
     reviews: [],
-    images: [r.image_url],
-    cards: [r.card_url || r.image_url],
+    images: [cleanPhotoUrl(r.image_url) || FALLBACK_IMG],
+    cards: [cleanPhotoUrl(r.card_url) || cleanPhotoUrl(r.image_url) || FALLBACK_IMG],
     videos: [],
     name: { en: r.name_en || '', hi: r.name_hi || r.name_en || '' },
     desc: { en: r.desc_en || '', hi: r.desc_hi || r.desc_en || '' },

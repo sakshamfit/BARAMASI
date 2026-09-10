@@ -59,7 +59,7 @@ export function initSearch() {
         const type = typeByKey(p.type);
         return `
         <li><a href="product.html?p=${p.slug}">
-          <img src="${p.cards[0]}" alt="" loading="lazy">
+          <img src="${p.cards[0]}" alt="" loading="lazy" onerror="this.onerror=null;this.src='assets/img/shade/neutrals.jpg'">
           <span class="so-main">
             <span class="so-name">${p.name[L]}</span>
             <span class="so-type">${type ? type.name[L] : ''}</span>

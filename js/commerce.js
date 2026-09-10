@@ -194,6 +194,10 @@ function toast(msg) {
   el._t = setTimeout(() => el.classList.remove('show'), 2400);
 }
 
+/* if a remote photo ever fails to load, show a local image instead of a
+   broken-image icon — the card stays shoppable either way */
+const IMG_FALLBACK = `onerror="this.onerror=null;this.src='assets/img/shade/neutrals.jpg'"`;
+
 const arrowSvg = `<svg viewBox="0 0 26 12" fill="none" aria-hidden="true"><path d="M1 6h23m0 0-4.6-4.6M24 6l-4.6 4.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const heartPath = `<path d="M12 20s-7-4.6-9-9c-1.2-2.8.4-6 3.4-6.4C8.4 4.3 10.6 5 12 7c1.4-2 3.6-2.7 5.6-2.4 3 .4 4.6 3.6 3.4 6.4-2 4.4-9 9-9 9Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>`;
 const playSvg = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(30,8,4,0.55)"/><path d="M10 8.2v7.6l6-3.8-6-3.8Z" fill="#F6ECDA"/></svg>`;
@@ -254,7 +258,7 @@ function productCard(p) {
   return `
     <li class="pc" data-id="${p.id}">
       <a class="pc-media" href="product.html?p=${p.slug}">
-        <img src="${p.cards[0]}" alt="${p.name.en}" loading="lazy">
+        <img src="${p.cards[0]}" alt="${p.name.en}" loading="lazy" ${IMG_FALLBACK}>
         ${p.videos.length ? `<span class="pc-video" aria-hidden="true">${playSvg}</span>` : ''}
       </a>
       <button class="pc-wish ${wished ? 'is-on' : ''}" data-wish="${p.id}" aria-label="Wishlist" aria-pressed="${wished}">
@@ -567,7 +571,7 @@ function pageProduct() {
   /* gallery slides: every image, then every video */
   const slides = [
     ...p.images.map((src, i) => `
-      <figure class="pd-slide"><img src="${src}" alt="${p.name.en} — view ${i + 1}" ${i ? 'loading="lazy"' : ''}></figure>`),
+      <figure class="pd-slide"><img src="${src}" alt="${p.name.en} — view ${i + 1}" ${i ? 'loading="lazy"' : ''} ${IMG_FALLBACK}></figure>`),
     ...p.videos.map((v) => `
       <figure class="pd-slide pd-slide-video">
         <video src="${v.src}" poster="${v.poster}" preload="none" playsinline controls></video>
@@ -683,7 +687,7 @@ function pageProduct() {
     ? `<h2 class="com-h2">${t('com.moreType')}</h2><ul class="pc-grid">${more.map(productCard).join('')}</ul>`
     : '';
   bindCardWishes(moreHost);
-  enterCards(moreHost);   /* same entrance language as the collection grids */
+  enter   /* same entrance language as the collection grids */
 }
 
 /* ─────────────────────────────────────────────
@@ -717,7 +721,7 @@ function pageCart() {
       total += line;
       return `
         <li class="cr" data-id="${id}">
-          <a class="cr-media" href="product.html?p=${p.slug}"><img src="${p.cards[0]}" alt="${p.name.en}"></a>
+          <a class="cr-media" href="product.html?p=${p.slug}"><img src="${p.cards[0]}" alt="${p.name.en}" ${IMG_FALLBACK}></a>
           <div class="cr-info">
             <a class="cr-name" href="product.html?p=${p.slug}">${p.name[L]}</a>
             <span class="cr-colour">${colourName(p.colour)}</span>
@@ -768,7 +772,7 @@ function pageWishlist() {
       const p = productById(id);
       return p ? `
         <li class="pc" data-id="${id}">
-          <a class="pc-media" href="product.html?p=${p.slug}"><img src="${p.cards[0]}" alt="${p.name.en}"></a>
+          <a class="pc-media" href="product.html?p=${p.slug}"><img src="${p.cards[0]}" alt="${p.name.en}" ${IMG_FALLBACK}></a>
           <a class="pc-name" href="product.html?p=${p.slug}">${p.name[L]}</a>
           <span class="pc-colour">${colourName(p.colour)}</span>
           <span class="pc-price">${formatPrice(p.price)}</span>
@@ -848,7 +852,7 @@ function pageCheckout() {
       if (!p) return '';
       const line = p.price * qty;
       total += line;
-      return `<li><img src="${p.cards[0]}" alt=""><span>${p.name[L]} × ${qty}</span><strong>${formatPrice(line)}</strong></li>`;
+      return `<li><img src="${p.cards[0]}" alt="" ${IMG_FALLBACK}><span>${p.name[L]} × ${qty}</span><strong>${formatPrice(line)}</strong></li>`;
     }).join('');
     document.getElementById('reviewTotal').textContent = formatPrice(total);
     document.getElementById('reviewAddr').textContent =

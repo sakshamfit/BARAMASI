@@ -12,6 +12,7 @@ import { initI18n, t, getLang } from './i18n.js';
 import {
   PRODUCTS, TYPES, COLOURS, COLOUR_COVERS, productById, productsByColour,
   productsByType, typeByKey, newArrivals, bestSellers, formatPrice,
+  onProductsChange, loadLiveProducts,
 } from './products.js';
 import { waLink, openWhatsApp, WA_GREETING } from './brand.js';
 import {
@@ -982,6 +983,10 @@ const PAGES = {
    listing pages register their own langRerender */
 const RERENDER = ['product', 'order', 'account'];
 
+/* pages that display product data and should re-render when the live
+   catalogue (re)loads */
+const DATA_PAGES = ['new-arrivals', 'collections', 'color', 'best-sellers', 'product', 'cart', 'wishlist'];
+
 function boot() {
   const page = document.body.dataset.page;
   if (!page) return;                       /* the landing page runs main.js */
@@ -1005,6 +1010,12 @@ function boot() {
 
   const run = PAGES[page];
   if (run) run();
+
+  /* live catalogue: when Supabase data lands (or the admin edits
+     something and we reload), re-render every product-data surface
+     so changes show without a manual refresh */
+  if (DATA_PAGES.includes(page)) onProductsChange(run);
+  loadLiveProducts();
 
   /* every internal page carries the journey Back button (the order
      confirmation instead offers Continue Shopping / View Orders) */

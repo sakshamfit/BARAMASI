@@ -14,6 +14,7 @@ import { initSmoothScroll, armRevealWatchdog } from './scroll.js';
 import { syncBadges } from './store.js';
 import { initSearch } from './search.js';
 import { trackPage } from './trail.js';
+import { loadLiveProducts } from './products.js';
 
 /* session flags (private-mode safe) */
 function ssGet(key) { try { return sessionStorage.getItem(key); } catch { return null; } }
@@ -84,6 +85,7 @@ function boot() {
   initMobileMenu();
   initHeaderState();
   initSearch();
+  loadLiveProducts();   /* keep search (and any product reads) on the live catalogue */
   syncBadges();
 
   /* returning via the browser back button restores this page from the

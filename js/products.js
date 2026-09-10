@@ -16,6 +16,8 @@
    · reviews    — structure ready, no fake reviews
    ═══════════════════════════════════════════════ */
 
+import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, SUPABASE_CONFIGURED } from './config.js';
+
 const P = 'assets/products/';
 
 /* helper: expand image stems into {full, card} pairs */
@@ -636,4 +638,78 @@ export function searchProducts(query) {
 
 export function formatPrice(n) {
   return '₹' + n.toLocaleString('en-IN');
+}
+
+/* ═══════════════════════════════════════════════
+   Live data — Supabase overrides the bundled snapshot.
+
+   The 33 records above are the offline fallback. Once
+   Supabase is configured (js/config.js) the live `products`
+   table becomes the single source of truth, so edits made
+   in /admin reflect instantly across every surface that
+   reads PRODUCTS. loadLiveProducts() runs on each page;
+   onProductsChange() lets consumers re-render when the
+   catalogue is (re)loaded.
+   ═══════════════════════════════════════════════ */
+
+let liveLoaded = false;
+const changeListeners = [];
+
+export function onProductsChange(fn) { changeListeners.push(fn); }
+export function isLive() { return liveLoaded; }
+
+/* a Supabase row → the exact product shape every surface expects */
+export function mapRow(r) {
+  return {
+    id: r.id,
+    slug: r.id,
+    type: r.type || 'hoodies',
+    colour: r.colour || 'neutrals',
+    price: Number(r.price) || 0,
+    priceConfirmed: !!r.price_confirmed,
+    availability: r.availability || 'in-store',
+    newArrival: r.new_arrival == null ? true : !!r.new_arrival,
+    bestSeller: !!r.best_seller,
+    rating: null,
+    reviews: [],
+    images: [r.image_url],
+    cards: [r.card_url || r.image_url],
+    videos: [],
+    name: { en: r.name_en || '', hi: r.name_hi || r.name_en || '' },
+    desc: { en: r.desc_en || '', hi: r.desc_hi || r.desc_en || '' },
+    fabric: { en: r.fabric_en || '', hi: r.fabric_hi || r.fabric_en || '' },
+    craft: { en: r.craft_en || '', hi: r.craft_hi || r.craft_en || '' },
+  };
+}
+
+/* re-derive COLOURS (present shades, in display order) from the live set */
+function refreshColours() {
+  COLOURS.length = 0;
+  for (const c of COLOUR_ORDER) {
+    if (PRODUCTS.some((p) => p.colour === c)) COLOURS.push(c);
+  }
+}
+
+export async function loadLiveProducts() {
+  if (!SUPABASE_CONFIGURED) return;      /* placeholders → keep the snapshot */
+  try {
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    const { data, error } = await supabase.from('products').select('*')
+      .order('sort_order', { ascending: true, nullsFirst: false })
+      .order('created_at', { ascending: true });
+    if (error || !Array.isArray(data) || !data.length) return;   /* keep snapshot */
+    PRODUCTS.length = 0;
+    for (const r of data) {
+      const p = mapRow(r);
+      p.slug = p.id;
+      PRODUCTS.push(p);
+    }
+    refreshColours();
+    liveLoaded = true;
+    changeListeners.forEach((fn) => { try { fn(); } catch { /* listener fault is non-fatal */ } });
+  } catch (e) {
+    /* offline / CDN blocked / Supabase unreachable — stay on the snapshot */
+    console.warn('BARAMASI: live products unavailable, using bundled snapshot.', e);
+  }
 }

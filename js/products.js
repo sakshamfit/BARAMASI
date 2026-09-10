@@ -658,6 +658,15 @@ const changeListeners = [];
 export function onProductsChange(fn) { changeListeners.push(fn); }
 export function isLive() { return liveLoaded; }
 
+/* one-glance connection state for debugging: after any page load, typing
+   `__baramasiLive` in the console shows whether the storefront is reading
+   the live /admin catalogue or the bundled snapshot, and why. */
+function reportLive(status) {
+  try {
+    window.__baramasiLive = { at: new Date().toISOString(), live: liveLoaded, ...status };
+  } catch { /* non-browser (e.g. the seed script) */ }
+}
+
 /* shown when a row has no usable photo (or a stale broken URL) — a local
    file, so it renders even while Supabase storage is unreachable */
 const FALLBACK_IMG = 'assets/img/shade/neutrals.jpg';
@@ -723,7 +732,7 @@ async function queryLiveProducts(supabase) {
 }
 
 export async function loadLiveProducts() {
-  if (!SUPABASE_CONFIGURED) return;      /* placeholders → keep the snapshot */
+  if (!SUPABASE_CONFIGURED) { reportLive({ source: 'snapshot', reason: 'not-configured' }); return; }
   try {
     const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
     const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
@@ -737,6 +746,7 @@ export async function loadLiveProducts() {
         'storefront is showing the bundled snapshot instead of your /admin catalogue. Re-run ' +
         'supabase/init.sql in the Supabase SQL editor (repairs policies + missing columns) and ' +
         'check js/config.js.', error);
+      reportLive({ source: 'snapshot', reason: 'read-error', message: String(error.message || error) });
       return;   /* keep snapshot */
     }
     if (!Array.isArray(data)) return;    /* keep snapshot */
@@ -746,6 +756,7 @@ export async function loadLiveProducts() {
       console.warn(
         'BARAMASI: the live products table returned zero rows. If /admin shows products, the ' +
         'public-read policy is missing — re-run supabase/init.sql in the Supabase SQL editor.');
+      reportLive({ source: 'snapshot', reason: 'zero-rows' });
       return;   /* keep snapshot */
     }
     PRODUCTS.length = 0;
@@ -756,9 +767,11 @@ export async function loadLiveProducts() {
     }
     refreshColours();
     liveLoaded = true;
+    reportLive({ source: 'live', count: PRODUCTS.length });
     changeListeners.forEach((fn) => { try { fn(); } catch { /* listener fault is non-fatal */ } });
   } catch (e) {
     /* offline / CDN blocked / Supabase unreachable — stay on the snapshot */
     console.warn('BARAMASI: live products unavailable, using bundled snapshot.', e);
+    reportLive({ source: 'snapshot', reason: 'unreachable', message: String((e && e.message) || e) });
   }
 }

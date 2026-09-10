@@ -39,6 +39,13 @@ no code, and every photo goes live automatically after a minute or two.
 4. Choose **"Commit directly to the `main` branch"** and press **Commit**.
    The live site updates itself automatically.
 
+> **Replaced a photo but still see the old one?** Same filename = same web
+> address, so your browser may keep showing the cached old photo for a few
+> minutes. Hard-refresh once (`Ctrl+Shift+R` on Windows, `Cmd+Shift+R` on
+> Mac) — if it still shows the old photo after ~10 minutes, tell the
+> maintainer. (Photos replaced through `/admin` never have this problem:
+> each upload gets a fresh address, so the new photo appears immediately.)
+
 **Where each photo goes:**
 
 | Photo | Drop it in this folder | Name it exactly |

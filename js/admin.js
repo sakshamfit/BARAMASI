@@ -104,7 +104,7 @@ function renderList() {
   host.innerHTML = products.map((p) => `
     <article class="adm-item" data-id="${p.id}">
       <div class="media">
-        ${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.name_en)}" loading="lazy" onerror="this.style.visibility='hidden'">` : ''}
+        ${p.image_url ? `<img src="${esc(adminImg(p.image_url))}" alt="${esc(p.name_en)}" loading="lazy" onerror="this.style.visibility='hidden'">` : ''}
         <span class="badge">${esc(CATEGORIES.find((c) => c[0] === p.type)?.[1] || p.type)}</span>
       </div>
       <div class="body">
@@ -129,6 +129,20 @@ function renderList() {
 function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* seeded rows store repo-relative photo paths (assets/…) that resolve from
+   the site root — but /admin lives one level down, so prefix them; absolute
+   Supabase upload URLs pass through untouched. Without this, every OLD photo
+   renders as a broken thumbnail (and a broken edit preview) in the dashboard,
+   which looks exactly like “photos are broken”. */
+function adminImg(url) {
+  const s = String(url || '').trim();
+  if (!s) return '';
+  if (/^(https?:|data:|blob:)/i.test(s)) return s;
+  if (s.startsWith('/')) return s;
+  if (s.startsWith('../')) return s;
+  return '../' + s.replace(/^\.\//, '');
 }
 
 /* ── data ── */
@@ -157,7 +171,9 @@ function editProduct(id) {
   $('newArrival').checked = p.new_arrival == null ? true : !!p.new_arrival;
   $('bestSeller').checked = !!p.best_seller;
   $('photo').value = '';
-  $('photoPreview').innerHTML = p.image_url ? `<img src="${esc(p.image_url)}" alt="">` : '';
+  $('photoPreview').innerHTML = p.image_url
+    ? `<img src="${esc(adminImg(p.image_url))}" alt="" onerror="this.parentElement.textContent='Photo unavailable'">`
+    : 'No photo';
   $('formTitle').textContent = 'Edit product';
   $('formSub').textContent = 'Editing “' + (p.name_en || id) + '”.';
   $('cancelBtn').hidden = false;
@@ -305,14 +321,17 @@ async function compressImage(file) {
   ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height);
   if (bmp.close) { try { bmp.close(); } catch { /* noop */ } }
   /* encode, stepping quality/size down until the file fits the storage
-     ceiling — this guarantees EVERY stored photo is small, no matter how
-     big or detailed the original was. The first attempt (full size, q0.82)
-     already lands under the ceiling for typical phone photos. */
+     ceiling — the last rungs are small enough that even noisy, detailed
+     originals land under it. The first attempt (full size, q0.82) already
+     fits typical phone photos. */
   const attempts = [
     { scale: 1, quality: JPEG_QUALITY },
     { scale: 1, quality: 0.7 },
     { scale: 1, quality: 0.6 },
     { scale: 0.75, quality: 0.7 },
+    { scale: 0.75, quality: 0.6 },
+    { scale: 0.6, quality: 0.65 },
+    { scale: 0.5, quality: 0.6 },
   ];
   let blob = null;
   for (const a of attempts) {
@@ -344,7 +363,7 @@ async function publicUrlFor(path) {
 }
 
 /* proves the photo is publicly visible — exactly what the storefront sees */
-function verifyPublicImage(url) {
+function verifyPublicImage(url, timeoutMs = 8000) {
   return new Promise((resolve) => {
     let done = false;
     const finish = (ok) => { if (!done) { done = true; resolve(ok); } };
@@ -352,8 +371,23 @@ function verifyPublicImage(url) {
     img.onload = () => finish(true);
     img.onerror = () => finish(false);
     img.src = url;
-    setTimeout(() => finish(false), 12000);
+    setTimeout(() => finish(false), timeoutMs);
   });
+}
+
+/* one slow load must never kill a good upload: retry the visibility check a
+   few times before concluding the bucket is private. Previously a single
+   transient failure deleted the just-uploaded photo and aborted the whole
+   save — the old photo stayed and the dashboard cried “NOT publicly
+   visible”, which reads as “the new photo won't replace the old one”. */
+async function verifyPublicImageWithRetry(url, attempts = 3) {
+  for (let i = 0; i < attempts; i++) {
+    if (i === 0) setStatus('Checking the photo shows on the store…', null);
+    else setStatus(`Checking the photo shows on the store… (retry ${i} of ${attempts - 1})`, null);
+    if (await verifyPublicImage(url)) return true;
+    if (i < attempts - 1) await new Promise((r) => setTimeout(r, 2000));
+  }
+  return false;
 }
 
 /* ── upload ── */
@@ -370,8 +404,7 @@ async function uploadPhoto(file, id) {
   });
   if (error) throw error;
   const url = await publicUrlFor(path);
-  setStatus('Checking the photo shows on the store…', null);
-  if (!(await verifyPublicImage(url))) {
+  if (!(await verifyPublicImageWithRetry(url))) {
     /* don't leave an invisible orphan behind */
     try { await c.storage.from('product-images').remove([path]); } catch { /* noop */ }
     throw new Error('Photo uploaded but is NOT publicly visible — the “product-images” bucket is probably private. Run supabase/fix-images.sql in the Supabase SQL editor, then try again.');
@@ -440,13 +473,18 @@ async function saveProduct(e) {
   btn.textContent = 'Saving…';
   setStatus('');
 
+  /* hoisted so the failure path below can clean up a just-uploaded photo
+     when the row itself never saved (otherwise every failed save leaves an
+     orphan file in the bucket that confuses later debugging) */
+  let newPath = null;
+  let rowSaved = false;
+
   try {
     const c = await getClient();
     const id = editingId || uniqueId(slugify(nameEn));
     const prev = editingId ? products.find((p) => p.id === editingId) : null;
     const oldUrls = prev ? [prev.image_url, prev.card_url] : [];
     let image_url = prev?.image_url || null;
-    let newPath = null;
     let savings = '';
 
     if (file) {
@@ -476,6 +514,7 @@ async function saveProduct(e) {
 
     const { error } = await c.from('products').upsert(row);
     if (error) throw error;
+    rowSaved = true;
 
     /* the new photo is live — now delete the old one(s) so storage never grows */
     if (newPath) await cleanupOldPhotos(id, newPath, oldUrls);
@@ -484,6 +523,14 @@ async function saveProduct(e) {
     resetForm();
     setStatus('Saved — live on the storefront now.' + savings, true);
   } catch (err) {
+    /* the row never saved but a new photo may already be uploaded — remove it
+       so a retry starts clean (never touch it once the row points at it) */
+    if (newPath && !rowSaved) {
+      try {
+        const c = await getClient();
+        await c.storage.from('product-images').remove([newPath]);
+      } catch { /* best-effort */ }
+    }
     setStatus('Save failed: ' + (err.message || err));
   } finally {
     btn.disabled = false;

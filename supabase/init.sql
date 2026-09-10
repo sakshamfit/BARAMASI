@@ -6,6 +6,11 @@
 
    Then paste supabase/seed.sql to load the 33 bundled products.
 
+   Safe to re-run any time: it only creates what is missing and
+   repairs older databases (see section 1b). If products saved in
+   /admin ever stop appearing on the storefront, re-running this
+   whole file is the first fix to try.
+
    ══ What this creates ══
    1. public.products — the live product catalogue (public read,
       admin write via Row Level Security).
@@ -54,6 +59,34 @@ create table if not exists public.products (
 );
 
 alter table public.products enable row level security;
+
+-- 1b ── repair databases created by an older version of this file ──
+-- “create table if not exists” NEVER upgrades an existing table, so a
+-- products table built by an older init.sql can be missing columns the
+-- site now expects. A missing “sort_order” is the classic one: the public
+-- storefront query orders by it, so the whole read fails and the shop
+-- silently shows only the bundled placeholder products — while /admin
+-- keeps working (it never touches sort_order). These idempotent ALTERs
+-- bring any older table fully up to date; they do nothing on fresh setups.
+alter table public.products add column if not exists sort_order integer;
+alter table public.products add column if not exists card_url text;
+alter table public.products add column if not exists stock integer;
+alter table public.products add column if not exists image_url text;
+alter table public.products add column if not exists price numeric(10, 2) not null default 0;
+alter table public.products add column if not exists price_confirmed boolean not null default false;
+alter table public.products add column if not exists best_seller boolean not null default false;
+alter table public.products add column if not exists new_arrival boolean not null default true;
+alter table public.products add column if not exists availability text not null default 'in-store';
+alter table public.products add column if not exists type text not null default 'hoodies';
+alter table public.products add column if not exists colour text not null default 'neutrals';
+alter table public.products add column if not exists name_hi text;
+alter table public.products add column if not exists desc_en text;
+alter table public.products add column if not exists desc_hi text;
+alter table public.products add column if not exists fabric_en text;
+alter table public.products add column if not exists fabric_hi text;
+alter table public.products add column if not exists craft_en text;
+alter table public.products add column if not exists craft_hi text;
+alter table public.products add column if not exists created_at timestamptz not null default now();
 
 -- 2 ── product policies (safe to re-run) ──────────────────────────
 drop policy if exists "products are publicly readable" on public.products;

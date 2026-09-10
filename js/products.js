@@ -701,15 +701,53 @@ function refreshColours() {
   }
 }
 
+/* fetch the whole live catalogue, tolerating databases created by an
+   older init.sql: “create table if not exists” never upgrades an existing
+   table, so such a database has no “sort_order” column and the ordered
+   query fails outright — which is exactly the “saved in /admin but never
+   appears on the store” bug. Detect that one and retry without it. */
+async function queryLiveProducts(supabase) {
+  const base = () => supabase.from('products').select('*');
+  let res = await base()
+    .order('sort_order', { ascending: true, nullsFirst: false })
+    .order('created_at', { ascending: true });
+  const errText = res.error ? `${res.error.message || ''} ${res.error.details || ''}` : '';
+  if (res.error && /sort_order/i.test(errText)) {
+    console.warn(
+      'BARAMASI: the live “products” table is missing the sort_order column (created with an older ' +
+      'setup script). The storefront still works — order falls back to created_at — but run ' +
+      'supabase/init.sql once in the Supabase SQL editor to upgrade the table.', res.error);
+    res = await base().order('created_at', { ascending: true });
+  }
+  return res;
+}
+
 export async function loadLiveProducts() {
   if (!SUPABASE_CONFIGURED) return;      /* placeholders → keep the snapshot */
   try {
     const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
     const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-    const { data, error } = await supabase.from('products').select('*')
-      .order('sort_order', { ascending: true, nullsFirst: false })
-      .order('created_at', { ascending: true });
-    if (error || !Array.isArray(data) || !data.length) return;   /* keep snapshot */
+    const { data, error } = await queryLiveProducts(supabase);
+    if (error) {
+      /* never stay silent here — a failed live read looks exactly like
+         “/admin saves fine but the shop never updates”, because the shop
+         keeps showing the bundled placeholder snapshot */
+      console.warn(
+        'BARAMASI: could not read the live products (' + (error.message || error) + ') — the ' +
+        'storefront is showing the bundled snapshot instead of your /admin catalogue. Re-run ' +
+        'supabase/init.sql in the Supabase SQL editor (repairs policies + missing columns) and ' +
+        'check js/config.js.', error);
+      return;   /* keep snapshot */
+    }
+    if (!Array.isArray(data)) return;    /* keep snapshot */
+    if (!data.length) {
+      /* RLS silently filters rows instead of erroring — zero rows while
+         /admin shows products means the public-read policy went missing */
+      console.warn(
+        'BARAMASI: the live products table returned zero rows. If /admin shows products, the ' +
+        'public-read policy is missing — re-run supabase/init.sql in the Supabase SQL editor.');
+      return;   /* keep snapshot */
+    }
     PRODUCTS.length = 0;
     for (const r of data) {
       const p = mapRow(r);

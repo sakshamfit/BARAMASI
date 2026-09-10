@@ -687,7 +687,7 @@ function pageProduct() {
     ? `<h2 class="com-h2">${t('com.moreType')}</h2><ul class="pc-grid">${more.map(productCard).join('')}</ul>`
     : '';
   bindCardWishes(moreHost);
-  enter   /* same entrance language as the collection grids */
+  enterCards(moreHost);   /* same entrance language as the collection grids */
 }
 
 /* ─────────────────────────────────────────────
@@ -1013,13 +1013,25 @@ function boot() {
   });
 
   const run = PAGES[page];
-  if (run) run();
 
-  /* live catalogue: when Supabase data lands (or the admin edits
-     something and we reload), re-render every product-data surface
-     so changes show without a manual refresh */
-  if (DATA_PAGES.includes(page)) onProductsChange(run);
-  loadLiveProducts();
+  if (DATA_PAGES.includes(page)) {
+    /* live catalogue: when Supabase data lands (or the admin edits
+       something and we reload), re-render every product-data surface
+       so changes show without a manual refresh */
+    onProductsChange(run);
+    /* first paint waits (briefly) for the live catalogue, so a product
+       edited in /admin never flashes its stale bundled snapshot first —
+       e.g. a seed row turned into a shirt must not appear as a hoodie.
+       The wait is bounded: if Supabase is slow or unreachable, the
+       snapshot paints and the live data re-renders whenever it lands. */
+    Promise.race([
+      loadLiveProducts().catch(() => { /* keep the bundled snapshot */ }),
+      new Promise((resolve) => setTimeout(resolve, 900)),
+    ]).then(() => { if (run) run(); });
+  } else {
+    if (run) run();
+    loadLiveProducts();
+  }
 
   /* every internal page carries the journey Back button (the order
      confirmation instead offers Continue Shopping / View Orders) */

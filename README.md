@@ -83,17 +83,30 @@ Every photo is processed in the browser **before** upload:
   orphans from earlier edits), and deleting a product removes all of its
   photos. Storage never grows with stale files.
 
-### Troubleshooting — photos upload but don't show on the store
+### Troubleshooting — saved in /admin but not showing on the store
 
-1. Re-run `supabase/init.sql` (or just `supabase/fix-images.sql`) in the
-   Supabase SQL editor — this forces the `product-images` bucket back to
-   **public** and recreates the read policies. A private bucket is the most
-   common cause: uploads succeed (you're signed in) but visitors can't read
-   the files.
-2. If the dashboard itself reports *“NOT publicly visible”* right after an
-   upload, it's the same bucket issue — step 1 fixes it.
-3. Hard-refresh the store page once (`Ctrl+Shift+R`) to drop any cached page
-   data.
+Products (or their photos) appear in the /admin list but never on the public
+storefront. Work through these in order:
+
+1. **Re-run `supabase/init.sql`** in the Supabase SQL editor (paste the whole
+   file → Run). It is safe to re-run and now **repairs older databases**:
+   it recreates the public-read policy and adds any missing columns. A
+   `products` table created by an older setup script is missing
+   `sort_order`, which made the storefront's read fail outright — the shop
+   then silently showed only the bundled placeholder products while /admin
+   kept working. Re-running the file fixes the table permanently.
+2. **Hard-refresh the store page once** (`Ctrl+Shift+R`) to drop any cached
+   page data from before the fix.
+3. **Check the browser console** (`F12` → Console) — the storefront now logs
+   a precise `BARAMASI:` warning whenever the live catalogue can't be read,
+   instead of silently falling back to placeholder products. Share that
+   message if you need help.
+4. If it's specifically **photos** that don't show (product names appear,
+   images don't), also run `supabase/fix-images.sql` — it forces the
+   `product-images` bucket back to **public**. A private bucket is the most
+   common photo cause: uploads succeed (you're signed in) but visitors
+   can't read the files. The dashboard reports *“NOT publicly visible”*
+   right after such an upload — the same fix applies.
 
 For the variable names used by a server-based deploy (e.g. if you later move
 to Next.js on Vercel), see `.env.local.example`.

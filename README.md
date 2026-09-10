@@ -38,7 +38,11 @@ descriptions and stock — from a private `/admin` page, no code or redeploy.
 **How it works:** the site still ships with the bundled 33-product snapshot
 (`js/products.js`) as an offline fallback. On every page it quietly fetches
 the live `products` table; when that succeeds, the live data becomes the
-single source of truth. Writes are guarded by Supabase **Row Level Security**
+single source of truth — including on the main page (`index.html`), whose
+section photos are swapped for the matching live product photos by
+`js/landing-live.js` (New Arrivals, Collections, Shop by Color, Best
+Sellers; Best-Seller cards deep-link to their product page). Writes are
+guarded by Supabase **Row Level Security**
 (only the signed-in admin can change rows or upload photos) — there is no
 server, so no secret keys ever reach the browser.
 
@@ -86,7 +90,11 @@ Every photo is processed in the browser **before** upload:
 ### Troubleshooting — saved in /admin but not showing on the store
 
 Products (or their photos) appear in the /admin list but never on the public
-storefront. Work through these in order:
+storefront. First, type `__baramasiLive` in the store page's console (`F12`):
+it reports `live` with a product count when connected, or `snapshot` with a
+reason (`not-configured` · `read-error` · `zero-rows` · `unreachable`) when
+the shop has fallen back to the bundled placeholders. Then work through
+these in order:
 
 1. **Re-run `supabase/init.sql`** in the Supabase SQL editor (paste the whole
    file → Run). It is safe to re-run and now **repairs older databases**:

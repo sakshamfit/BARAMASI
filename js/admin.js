@@ -198,6 +198,7 @@ async function deleteProduct(id) {
 
 const MAX_EDGE = 1600;          /* px on the long edge after compression */
 const JPEG_QUALITY = 0.82;
+const MAX_STORED_BYTES = 500 * 1024;  /* hard ceiling per stored photo */
 const MAX_ORIGINAL_MB = 20;     /* originals may be big — we shrink them */
 const DISPLAYABLE_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'heic', 'heif'];
 
@@ -254,14 +255,26 @@ async function decodeImage(file) {
   }
 }
 
-function canvasToJpeg(canvas) {
+function canvasToJpeg(canvas, quality) {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => (blob ? resolve(blob) : reject(new Error('Photo compression failed in this browser.'))),
       'image/jpeg',
-      JPEG_QUALITY,
+      quality,
     );
   });
+}
+
+/* a smaller copy of a canvas (used when a photo needs a second shrink pass) */
+function scaledCanvas(src, scale) {
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(src.width * scale));
+  c.height = Math.max(1, Math.round(src.height * scale));
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(src, 0, 0, c.width, c.height);
+  return c;
 }
 
 async function compressImage(file) {
@@ -291,7 +304,22 @@ async function compressImage(file) {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(bmp, 0, 0, canvas.width, canvas.height);
   if (bmp.close) { try { bmp.close(); } catch { /* noop */ } }
-  const blob = await canvasToJpeg(canvas);
+  /* encode, stepping quality/size down until the file fits the storage
+     ceiling — this guarantees EVERY stored photo is small, no matter how
+     big or detailed the original was. The first attempt (full size, q0.82)
+     already lands under the ceiling for typical phone photos. */
+  const attempts = [
+    { scale: 1, quality: JPEG_QUALITY },
+    { scale: 1, quality: 0.7 },
+    { scale: 1, quality: 0.6 },
+    { scale: 0.75, quality: 0.7 },
+  ];
+  let blob = null;
+  for (const a of attempts) {
+    const frame = a.scale === 1 ? canvas : scaledCanvas(canvas, a.scale);
+    blob = await canvasToJpeg(frame, a.quality);
+    if (blob.size <= MAX_STORED_BYTES) break;
+  }
   return { blob, original: file.size, compressed: blob.size };
 }
 

@@ -72,7 +72,8 @@ storefront immediately (no redeploy).
 Every photo is processed in the browser **before** upload:
 
 - **Compressed** to a single JPEG (long edge ≤ 1600px, quality 0.82), so a
-  4–5 MB phone photo is stored as ~200–400 KB.
+  4–5 MB phone photo is stored as ~200–400 KB. An adaptive step-down loop
+  guarantees **no stored photo ever exceeds 500 KB**, whatever the source.
 - **Converted** automatically — iPhone HEIC shots become JPGs, because
   browsers can't display HEIC (this was the classic “stored but not showing”
   case).

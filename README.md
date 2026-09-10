@@ -67,6 +67,34 @@ That's it. `/admin` now lists, edits and deletes products and uploads photos
 straight to the `product-images` bucket; every change reflects on the public
 storefront immediately (no redeploy).
 
+### Photo uploads — compression & cleanup
+
+Every photo is processed in the browser **before** upload:
+
+- **Compressed** to a single JPEG (long edge ≤ 1600px, quality 0.82), so a
+  4–5 MB phone photo is stored as ~200–400 KB. An adaptive step-down loop
+  guarantees **no stored photo ever exceeds 500 KB**, whatever the source.
+- **Converted** automatically — iPhone HEIC shots become JPGs, because
+  browsers can't display HEIC (this was the classic “stored but not showing”
+  case).
+- **Verified** — after upload, the dashboard checks the public URL actually
+  loads, exactly as the storefront sees it.
+- **Old photos deleted** — every edit removes the previous photo (plus any
+  orphans from earlier edits), and deleting a product removes all of its
+  photos. Storage never grows with stale files.
+
+### Troubleshooting — photos upload but don't show on the store
+
+1. Re-run `supabase/init.sql` (or just `supabase/fix-images.sql`) in the
+   Supabase SQL editor — this forces the `product-images` bucket back to
+   **public** and recreates the read policies. A private bucket is the most
+   common cause: uploads succeed (you're signed in) but visitors can't read
+   the files.
+2. If the dashboard itself reports *“NOT publicly visible”* right after an
+   upload, it's the same bucket issue — step 1 fixes it.
+3. Hard-refresh the store page once (`Ctrl+Shift+R`) to drop any cached page
+   data.
+
 For the variable names used by a server-based deploy (e.g. if you later move
 to Next.js on Vercel), see `.env.local.example`.
 

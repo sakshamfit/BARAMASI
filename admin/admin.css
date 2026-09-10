@@ -1,0 +1,222 @@
+/* ═══════════════════════════════════════════════
+   BARAMASI — admin. Shares the storefront's palette,
+   type and button language (see css/base.css +
+   css/commerce.css): cream ground, maroon walls,
+   terracotta accents, Cormorant/Jost type.
+   ═══════════════════════════════════════════════ */
+
+:root {
+  --cream:        #ECDAC5;
+  --cream-deep:   #E0CAB2;
+  --ivory:        #FBEAD4;
+  --terracotta:   #B56B4F;
+  --terracotta-2: #A65B3F;
+  --taupe-ring:   #C6A288;
+  --maroon:       #510D06;
+  --maroon-2:     #5A1712;
+  --btn:          #581115;
+  --btn-hover:    #6B1712;
+  --text-cream:   #F3E6D0;
+  --ink:          #3E100A;
+  --ink-soft:     #6B4A38;
+  --line:         rgba(90, 23, 18, 0.22);
+  --ok:           #4A6B3A;
+  --err:          #A6341F;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--cream); }
+
+body {
+  margin: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a { color: inherit; }
+
+/* ── top bar ── */
+.adm-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.1em;
+  padding: 1.1em 2.2em;
+  background: var(--maroon);
+  color: var(--text-cream);
+}
+.adm-bar img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }
+.adm-bar .adm-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.25em; letter-spacing: 0.02em; }
+.adm-bar .adm-title em { font-style: normal; opacity: 0.6; font-size: 0.72em; letter-spacing: 0.18em; text-transform: uppercase; display: block; font-family: 'Jost', sans-serif; }
+.adm-bar .spacer { flex: 1; }
+
+.adm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8em;
+  padding: 0.75em 1.5em;
+  border: none;
+  border-radius: 3px;
+  background: var(--btn);
+  color: #F2E4CA;
+  cursor: pointer;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.4s cubic-bezier(0.22,1,0.36,1), transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.adm-btn:hover { background: var(--btn-hover); transform: translateY(-1px); box-shadow: 0 10px 22px rgba(64,12,8,0.24); }
+.adm-btn:active { transform: translateY(0); }
+.adm-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.adm-btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.adm-btn.ghost:hover { background: rgba(90,23,18,0.06); box-shadow: none; }
+.adm-btn.danger { background: var(--err); }
+.adm-btn.danger:hover { background: #8c2a17; }
+.adm-btn.small { padding: 0.5em 0.95em; font-size: 11px; letter-spacing: 0.16em; }
+
+/* ── layout ── */
+.adm-wrap { max-width: 1180px; margin: 0 auto; padding: 3em 2.2em 6em; }
+.adm-grid { display: grid; grid-template-columns: minmax(340px, 420px) 1fr; gap: 3em; align-items: start; }
+@media (max-width: 900px) { .adm-grid { grid-template-columns: 1fr; } }
+
+/* ── section headings ── */
+.adm-h {
+  font-family: 'Cormorant', Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(24px, 3.4vh, 30px);
+  color: var(--maroon-2);
+  margin: 0 0 0.2em;
+  letter-spacing: 0.01em;
+}
+.adm-sub { color: var(--ink-soft); font-size: 1.05em; margin: 0 0 1.6em; }
+
+/* ── form card ── */
+.adm-panel {
+  background: rgba(255, 252, 245, 0.6);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 2em 1.8em;
+  position: sticky;
+  top: 1.5em;
+}
+@media (max-width: 900px) { .adm-panel { position: static; } }
+
+.adm-field { margin-bottom: 1.25em; }
+.adm-field label {
+  display: block;
+  margin-bottom: 0.45em;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.02em;
+  color: #4A1208;
+}
+.adm-field .hint { font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); margin-left: 0.5em; font-weight: 400; }
+.adm-field input[type="text"],
+.adm-field input[type="number"],
+.adm-field input[type="email"],
+.adm-field input[type="password"],
+.adm-field textarea,
+.adm-field select {
+  width: 100%;
+  padding: 0.75em 0.95em;
+  background: rgba(255, 252, 245, 0.75);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  color: var(--ink);
+  transition: border-color 0.4s cubic-bezier(0.22,1,0.36,1), background 0.4s cubic-bezier(0.22,1,0.36,1);
+  appearance: none;
+}
+.adm-field textarea { resize: vertical; min-height: 84px; line-height: 1.45; }
+.adm-field input:focus, .adm-field textarea:focus, .adm-field select:focus {
+  outline: none;
+  border-color: rgba(90, 23, 18, 0.75);
+  background: #FFFDF7;
+}
+.adm-field input::placeholder, .adm-field textarea::placeholder { color: rgba(90,40,25,0.4); }
+
+.adm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; }
+.adm-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1em; }
+@media (max-width: 480px) { .adm-row, .adm-row3 { grid-template-columns: 1fr; } }
+
+/* checkboxes */
+.adm-check { display: flex; align-items: center; gap: 0.6em; margin: 0.85em 0; font-size: 1em; cursor: pointer; }
+.adm-check input { width: 16px; height: 16px; accent-color: var(--terracotta); }
+
+/* photo picker + live preview */
+.adm-photo { display: flex; gap: 1.1em; align-items: center; }
+.adm-photo .thumb {
+  width: 92px; height: 92px; flex: none;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--cream-deep) center/cover no-repeat;
+  display: grid; place-items: center;
+  color: var(--ink-soft); font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  overflow: hidden;
+}
+.adm-photo .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.adm-photo input[type="file"] { font-family: 'Jost', sans-serif; font-size: 13px; color: var(--ink-soft); max-width: 100%; }
+.adm-photo input[type="file"]::file-selector-button {
+  border: 1px solid var(--line);
+  background: var(--ivory);
+  border-radius: 2px;
+  padding: 0.55em 1em;
+  margin-right: 0.8em;
+  font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink); cursor: pointer;
+}
+
+/* status line */
+.adm-status { min-height: 1.4em; font-family: 'Jost', sans-serif; font-size: 13px; letter-spacing: 0.02em; margin-top: 0.9em; }
+.adm-status.ok { color: var(--ok); }
+.adm-status.err { color: var(--err); }
+
+/* ── product list ── */
+.adm-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.2em; }
+.adm-item {
+  background: rgba(255, 252, 245, 0.6);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.adm-item .media { aspect-ratio: 4/3; background: var(--cream-deep) center/cover no-repeat; position: relative; }
+.adm-item .media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.adm-item .media .badge { position: absolute; top: 8px; left: 8px; background: rgba(81,13,6,0.85); color: var(--text-cream); font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 7px; border-radius: 2px; }
+.adm-item .body { padding: 0.9em 1em 1.1em; display: flex; flex-direction: column; gap: 0.3em; flex: 1; }
+.adm-item .name { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 1.12em; color: var(--maroon-2); line-height: 1.15; }
+.adm-item .meta { font-family: 'Jost', sans-serif; font-size: 12px; color: var(--ink-soft); letter-spacing: 0.02em; }
+.adm-item .price { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.05em; color: var(--ink); }
+.adm-item .price s { color: var(--ink-soft); margin-left: 0.4em; font-size: 0.9em; }
+.adm-item .actions { display: flex; gap: 0.5em; margin-top: auto; padding-top: 0.7em; }
+.adm-item .actions .adm-btn { flex: 1; }
+
+.adm-empty { grid-column: 1 / -1; text-align: center; color: var(--ink-soft); padding: 3em 1em; font-size: 1.1em; }
+
+/* ── auth (login) ── */
+.adm-auth {
+  min-height: 100vh;
+  display: grid; place-items: center;
+  padding: 2em;
+  background:
+    radial-gradient(120% 120% at 50% -10%, rgba(181,107,79,0.18), transparent 55%),
+    var(--cream);
+}
+.adm-auth-card { width: min(420px, 100%); }
+.adm-auth .brand { text-align: center; margin-bottom: 1.6em; }
+.adm-auth .brand img { height: 64px; width: 64px; border-radius: 50%; }
+.adm-auth .brand h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 1.6em; color: var(--maroon); margin: 0.5em 0 0; }
+.adm-auth .brand p { color: var(--ink-soft); margin: 0.3em 0 0; }
+.adm-auth .switch { text-align: center; font-family: 'Jost', sans-serif; font-size: 13px; color: var(--ink-soft); margin-top: 1.4em; }
+.adm-auth .switch button { background: none; border: none; color: var(--terracotta-2); cursor: pointer; font: inherit; text-decoration: underline; padding: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

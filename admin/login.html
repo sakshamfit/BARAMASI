@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Sign in — BARAMASI Admin</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600&family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="adm-auth">
+  <main class="adm-auth-card">
+    <div class="brand">
+      <img src="../assets/img/logo.svg" alt="BARAMASI">
+      <h1>बारामासी · Admin</h1>
+      <p>Manage your products — photos, prices and stock.</p>
+    </div>
+
+    <div class="adm-panel">
+      <h2 class="adm-h" id="authTitle">Sign in</h2>
+      <p class="adm-sub" id="authSub">Enter your admin email and password.</p>
+
+      <form id="authForm" novalidate>
+        <div class="adm-field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="username" required>
+        </div>
+        <div class="adm-field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6">
+        </div>
+        <button class="adm-btn" id="submitBtn" type="submit" style="width:100%">Sign in</button>
+        <p class="adm-status err" id="status" role="alert" aria-live="polite"></p>
+      </form>
+
+      <div class="switch">
+        <span id="switchText">No account yet?</span>
+        <button id="switchBtn" type="button">Create the admin account</button>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="../js/admin-login.js"></script>
+</body>
+</html>

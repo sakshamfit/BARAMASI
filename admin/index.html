@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Products — BARAMASI Admin</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600&family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <header class="adm-bar">
+    <img src="../assets/img/logo.svg" alt="">
+    <div class="adm-title">Products
+      <em>बारामासी · Admin</em>
+    </div>
+    <div class="spacer"></div>
+    <a class="adm-btn ghost" href="../index.html" target="_blank" rel="noopener">View store</a>
+    <button class="adm-btn" id="logoutBtn" type="button">Sign out</button>
+  </header>
+
+  <main class="adm-wrap">
+    <div class="adm-grid">
+      <!-- ── form ── -->
+      <section class="adm-panel" aria-label="Product editor">
+        <h2 class="adm-h" id="formTitle">Add a product</h2>
+        <p class="adm-sub" id="formSub">Fill in the details, then save.</p>
+
+        <form id="productForm" novalidate>
+          <div class="adm-field">
+            <label for="photo">Photo <span class="hint">JPG / PNG · under 5 MB</span></label>
+            <div class="adm-photo">
+              <div class="thumb" id="photoPreview">No photo</div>
+              <input id="photo" name="photo" type="file" accept="image/*">
+            </div>
+          </div>
+
+          <div class="adm-field">
+            <label for="nameEn">Name (English) <span class="hint">required</span></label>
+            <input id="nameEn" name="nameEn" type="text" required>
+          </div>
+          <div class="adm-field">
+            <label for="nameHi">Name (हिन्दी) <span class="hint">optional</span></label>
+            <input id="nameHi" name="nameHi" type="text">
+          </div>
+          <div class="adm-field">
+            <label for="descEn">Description (English)</label>
+            <textarea id="descEn" name="descEn"></textarea>
+          </div>
+          <div class="adm-field">
+            <label for="descHi">Description (हिन्दी)</label>
+            <textarea id="descHi" name="descHi"></textarea>
+          </div>
+
+          <div class="adm-row">
+            <div class="adm-field">
+              <label for="price">Price (₹) <span class="hint">required</span></label>
+              <input id="price" name="price" type="number" min="0" step="0.01" inputmode="decimal" required>
+            </div>
+            <div class="adm-field">
+              <label for="stock">Stock <span class="hint">blank = unknown</span></label>
+              <input id="stock" name="stock" type="number" min="0" step="1" inputmode="numeric">
+            </div>
+          </div>
+
+          <div class="adm-row">
+            <div class="adm-field">
+              <label for="type">Category</label>
+              <select id="type" name="type"></select>
+            </div>
+            <div class="adm-field">
+              <label for="colour">Colour</label>
+              <select id="colour" name="colour"></select>
+            </div>
+          </div>
+
+          <label class="adm-check"><input id="priceConfirmed" type="checkbox" checked> Price is final (no “confirmed at store” note)</label>
+          <label class="adm-check"><input id="newArrival" type="checkbox" checked> Show in New Arrivals</label>
+          <label class="adm-check"><input id="bestSeller" type="checkbox"> Mark as Best Seller</label>
+
+          <div class="adm-row">
+            <button class="adm-btn" id="saveBtn" type="submit" style="width:100%">Save product</button>
+            <button class="adm-btn ghost" id="cancelBtn" type="button" style="width:100%" hidden>Cancel edit</button>
+          </div>
+          <p class="adm-status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <!-- ── list ── -->
+      <section aria-label="Existing products">
+        <h2 class="adm-h">Catalogue <span id="countLabel" class="hint" style="font-family:Jost,sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#6B4A38"></span></h2>
+        <p class="adm-sub">Changes go live on the storefront immediately.</p>
+        <div class="adm-list" id="productList">
+          <p class="adm-empty">Loading…</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="../js/admin.js"></script>
+</body>
+</html>

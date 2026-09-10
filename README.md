@@ -11,6 +11,8 @@ Second site language is now **Hindi** (हिन्दी) instead of Telugu.
 Data sources / files you will edit when real stock arrives:
 
 - `js/products.js` — the 33-piece photographed catalogue (9 categories — hoodies, sweats, tees, shirts, jackets, co-ord sets, joggers, trousers, shorts).
+  This is now the **offline fallback snapshot**; the live catalogue is the
+  Supabase `products` table (see “Admin & live catalogue” below).
   Prices are placeholders (`priceConfirmed:false`) — the product page shows
   an "indicative price, confirmed at the store" note. Three HOODIE records
   use the store's real supplied photography; all other product photos are
@@ -26,6 +28,47 @@ To revert to the original SIAARA build: `git checkout -- .` (the SIAARA
 commit is the repo's first commit `32a276e`).
 
 Premium clothing store website (static: HTML/CSS/JS, no build step).
+
+## Admin & live catalogue (Supabase)
+
+The storefront can now read its product catalogue **live from Supabase**, so
+the owner can add / edit / delete products — photos, names, prices,
+descriptions and stock — from a private `/admin` page, no code or redeploy.
+
+**How it works:** the site still ships with the bundled 33-product snapshot
+(`js/products.js`) as an offline fallback. On every page it quietly fetches
+the live `products` table; when that succeeds, the live data becomes the
+single source of truth. Writes are guarded by Supabase **Row Level Security**
+(only the signed-in admin can change rows or upload photos) — there is no
+server, so no secret keys ever reach the browser.
+
+### One-time setup
+
+1. **Create a free Supabase project** at https://supabase.com.
+2. **Create the schema** — Dashboard → SQL editor → New query → paste
+   `supabase/init.sql` → Run. This makes the `products` table, the
+   `product-images` storage bucket, and the read/write security policies.
+3. **Seed the catalogue** — paste `supabase/seed.sql` → Run (33 products,
+   matching the bundled snapshot). Or, if you prefer a script:
+   `SUPABASE_URL=… SUPABASE_SERVICE_ROLE_KEY=… node tools/seed.mjs`.
+4. **Add the two public values** to `js/config.js` (find them under
+   Dashboard → Settings → API):
+   - `SUPABASE_URL` = Project URL
+   - `SUPABASE_ANON_KEY` = `anon` / public key
+   Never put the `service_role` key in `js/config.js`.
+5. **Create the admin login** — open `/admin/login.html` and use
+   *“Create the admin account”* (confirm via the email Supabase sends), or
+   add the user in Dashboard → Authentication → Users → Add user (tick
+   *Auto Confirm User*). Then sign in.
+6. **Recommended** — turn off self sign-up so only you can register:
+   Authentication → Providers → Email → *Allow new users to sign up* → OFF.
+
+That's it. `/admin` now lists, edits and deletes products and uploads photos
+straight to the `product-images` bucket; every change reflects on the public
+storefront immediately (no redeploy).
+
+For the variable names used by a server-based deploy (e.g. if you later move
+to Next.js on Vercel), see `.env.local.example`.
 
 ## Run locally
 
